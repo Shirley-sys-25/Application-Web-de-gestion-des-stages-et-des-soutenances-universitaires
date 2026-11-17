@@ -1,2 +1,28 @@
-.~lock.*
+# Secrets et configuration locale
 .env
+.env.local
+config/config.php
+
+# Dépendances
+vendor/
+node_modules/
+
+# Outils locaux : le jar PlantUML (~22 Mo) se retélécharge, il n'est pas versionné
+plantuml.jar
+
+# Journaux et fichiers temporaires
+*.log
+*.tmp
+
+# Éditeurs et systèmes
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Verrous LibreOffice
+.~lock.*
+
+# Support de cours fourni par l'enseignant : non diffusable sur un dépôt public
+Cours_L3_*.pdf
