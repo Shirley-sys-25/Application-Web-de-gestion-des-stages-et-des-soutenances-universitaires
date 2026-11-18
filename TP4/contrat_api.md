@@ -4,7 +4,7 @@
 **Base URL locale :** `http://localhost:8000`  
 **Format :** JSON UTF-8 (`Content-Type: application/json; charset=utf-8`)  
 **Authentification :** session par cookie (implémentée au TP6)  
-**Rôles :** `ETUDIANT`, `RESPONSABLE`, `SECRETARIAT`, `ADMINISTRATEUR`, `DEVELOPPEUR`
+**Rôles :** `ETUDIANT`, `RESPONSABLE`, `ADMINISTRATEUR`, `DEVELOPPEUR`
 
 Le rôle `DEVELOPPEUR` est réservé à la maintenance (journalisation, déploiement, diagnostic ; EF-12). Il n'accède à aucune route métier du TP4 ; son périmètre sera précisé avec l'authentification au TP6.
 
@@ -37,7 +37,7 @@ Aucun détail technique (SQL, nom d'utilisateur, mot de passe, trace PHP) n'est 
 | Méthode | Chemin | Rôle autorisé | Succès | Erreurs |
 |---|---|---|---|---|
 | `GET` | `/api/sante` | public | `200` | `503` |
-| `GET` | `/api/demandes` | Responsable, Administrateur, Secrétariat | `200` | `400`, `401`, `403` |
+| `GET` | `/api/demandes` | Responsable, Administrateur | `200` | `400`, `401`, `403` |
 | `POST` | `/api/demandes` | Étudiant | `201` | `400`, `401`, `403` |
 | `PATCH` | `/api/demandes/{id}/statut` | Responsable, Administrateur | `200` | `400`, `401`, `403`, `404`, `409` |
 
@@ -75,7 +75,7 @@ curl -i http://localhost:8000/api/sante
 
 ## GET /api/demandes
 
-Liste les demandes de stage. Réservée au responsable pédagogique, à l'administrateur (par héritage) et au secrétariat.
+Liste les demandes de stage. Réservée au responsable pédagogique et à l'administrateur (par héritage).
 
 **Paramètres de requête optionnels**
 
@@ -116,7 +116,7 @@ La liste est vide (`[]`) s'il n'y a aucune demande.
 
 - `400` : valeur de `statut` inconnue.
 - `401` : aucune session active.
-- `403` : rôle différent de `RESPONSABLE`, `ADMINISTRATEUR` ou `SECRETARIAT`.
+- `403` : rôle différent de `RESPONSABLE` ou `ADMINISTRATEUR`.
 
 ---
 
@@ -132,7 +132,7 @@ Crée une demande de stage pour l'étudiant connecté.
 }
 ```
 
-L'étudiant est identifié par la session : `etudiant_id` n'est jamais accepté depuis le corps de la requête. L'encadreur n'est pas choisi par l'étudiant : `encadreur_id` reste `NULL` jusqu'à l'affectation par le secrétariat (EF-04).
+L'étudiant est identifié par la session : `etudiant_id` n'est jamais accepté depuis le corps de la requête. L'encadreur n'est pas choisi par l'étudiant : `encadreur_id` reste `NULL` jusqu'à l'affectation par le responsable (EF-04).
 
 La demande est créée directement au statut `SOUMISE` (« En attente »), avec `date_depot` remplie par le serveur. Le statut `BROUILLON` reste disponible pour un brouillon non soumis, mais ne fait pas partie de cette route.
 
