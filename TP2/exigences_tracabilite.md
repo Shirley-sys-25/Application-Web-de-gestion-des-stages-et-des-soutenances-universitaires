@@ -14,10 +14,10 @@
 | EF-01 | Se connecter avec un compte | Tous | Session ouverte avec le rôle de l'utilisateur ; même message d'échec pour un compte inconnu et un mot de passe faux | Must |
 | EF-02 | Soumettre une demande de stage | Étudiant | Demande enregistrée au statut « En attente » et accusé de réception affiché | Must |
 | EF-03 | Valider (confirmer) ou refuser une demande (refus motivé) | Responsable | Statut VALIDEE ou REFUSEE (motif obligatoire), décision ajoutée à l'historique | Must |
-| EF-04 | Affecter un encadreur à une demande validée | Secrétariat | Encadreur associé à la demande validée | Must |
-| EF-05 | Programmer la soutenance d'une demande validée | Secrétariat | Soutenance créée (date, heure, salle), une seule par demande | Must |
+| EF-04 | Affecter un encadreur à une demande validée | Responsable | Encadreur associé à la demande validée | Must |
+| EF-05 | Programmer la soutenance d'une demande validée | Responsable | Soutenance créée (date, heure, salle), une seule par demande | Must |
 | EF-06 | Consulter l'état de ses demandes | Étudiant | Liste des demandes de l'étudiant connecté avec leur statut | Should |
-| EF-07 | Rechercher un dossier par nom ou statut | Secrétariat | Liste filtrée par nom d'étudiant ou par statut | Should |
+| EF-07 | Rechercher un dossier par nom ou statut | Responsable | Liste filtrée par nom d'étudiant ou par statut | Should |
 | EF-08 | Consulter l'historique des décisions | Responsable | Liste chronologique des décisions d'un dossier | Could |
 | EF-10 | Gérer les comptes et les rôles | Administrateur | Compte créé, désactivé ou rôle modifié ; un compte désactivé ne peut plus se connecter | Must |
 | EF-11 | Gérer son compte (consulter et modifier ses informations, changer son mot de passe) | Étudiant | Profil de l'étudiant connecté consulté ou modifié ; un utilisateur ne peut modifier que son propre compte | Should |
@@ -41,7 +41,7 @@ _ENF-01 à ENF-03 : autorisation, validation serveur, sauvegarde testée. ENF-04
 
 ### US-01 (EF-02) – Soumettre une demande
 
-En tant qu'étudiant, je veux soumettre une demande de stage afin que le secrétariat et le responsable puissent la traiter.
+En tant qu'étudiant, je veux soumettre une demande de stage afin que le responsable pédagogique et l'administrateur puissent la traiter.
 
 **Critère 1 – cas nominal**
 

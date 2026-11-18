@@ -1,6 +1,7 @@
 @startuml cas_usage
 ' Diagramme de cas d'utilisation - TP3 - Projet informatique 2
 ' Version fusionnée : socle TP3 + acteur Développeur / maintenance.
+' Le rôle Secrétariat est supprimé : l'affectation et la recherche sont rattachées au Responsable.
 ' UC01 est inclus par tous les cas métier : aucun accès sans session.
 skinparam dpi 200
 skinparam monochrome true
@@ -13,7 +14,6 @@ left to right direction
 
 actor "Étudiant" as E
 actor "Responsable\npédagogique" as R
-actor "Secrétariat" as S
 actor "Administrateur" as A
 actor "Développeur" as D
 
@@ -37,18 +37,20 @@ rectangle "Application de gestion des stages et des soutenances" {
   }
   usecase "UC08\nGérer les comptes\net les rôles" as UC08
   usecase "UC10\nMaintenir\nl'application" as UC10
+  ' Place le cas de maintenance à droite du cadre, avec le développeur à l'extérieur.
+  UC01 -[hidden]right- UC10
 }
 
 E --> UC02
 E --> UC03
 E --> UC09
 R --> UC04
+R --> UC05
 R --> UC06
-S --> UC05
-S --> UC06
-S --> UC07
+R --> UC07
 A --> UC08
-D --> UC10
+' Le développeur reste à droite du cadre ; le trait est une association sans flèche.
+UC10 -- D
 
 ' UC04 couvre les deux issues (confirmer ou refuser) ; le détail est dans le tableau du rapport.
 UC02 ..> UC01 : <<include>>
