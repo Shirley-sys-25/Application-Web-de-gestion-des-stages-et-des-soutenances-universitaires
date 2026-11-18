@@ -1,7 +1,6 @@
 # Secrets et configuration locale
 .env
 .env.local
-config/config.php
 
 # Dépendances
 vendor/
