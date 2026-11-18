@@ -1,0 +1,49 @@
+@startuml activite_valider_demande
+' Diagramme d'activite - scenario "Valider une demande"
+' Les contrôles d'entree sont evalues dans cet ordre : session, demande,
+' role, statut, motif. Chaque echec renvoie un code HTTP distinct.
+skinparam dpi 200
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam padding 3
+skinparam defaultFontSize 24
+skinparam activityFontSize 24
+skinparam arrowFontSize 22
+skinparam nodesep 10
+skinparam ranksep 25
+skinparam ArrowColor #444444
+skinparam activityBorderColor #444444
+skinparam activityBackgroundColor #FFFFFF
+skinparam activityDiamondBackgroundColor #F2F2F2
+
+start
+:Recevoir PATCH /api/demandes/{id}/statut;
+:Authentifier l'utilisateur;
+:Charger la demande;
+switch (Contrôles préalables)
+case (tous valides)
+  :Enregistrer la décision\n(statut, motif_refus, date_decision);
+  if (Erreur SQL ?) then (oui)
+    :ROLLBACK puis 500;
+    stop
+  endif
+  :COMMIT puis 200 OK;
+  stop
+case (session absente)
+  :401 Unauthorized;
+  stop
+case (demande introuvable)
+  :404 Not Found;
+  stop
+case (rôle non autorisé)
+  :403 Forbidden;
+  stop
+case (statut différent de SOUMISE)
+  :409 Conflict;
+  stop
+case (refus sans motif)
+  :400 Bad Request;
+  stop
+endswitch
+@enduml

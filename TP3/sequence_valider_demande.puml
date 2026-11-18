@@ -1,0 +1,75 @@
+@startuml sequence_valider_demande
+' Diagramme de sequence - scenario "Valider une demande"
+skinparam dpi 200
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam responseMessageBelowArrow true
+skinparam defaultFontSize 20
+skinparam sequenceMessageAlign left
+skinparam noteFontSize 18
+autonumber
+
+actor "Responsable\npédagogique" as R
+participant "Contrôleur\nDemandeController" as C
+participant "Service\nDemandeService" as S
+participant "Dépôt\nDemandeRepository" as D
+database "Base\nMySQL / MariaDB" as DB
+
+R -> C : PATCH /api/demandes/{id}/statut\n{ decision, motif }
+activate C
+
+C -> C : vérifier la session
+alt session absente
+  C --> R : 401 Unauthorized
+else
+  C -> S : changerStatut(id, decision, motif, session)
+  activate S
+
+  S -> D : findById(id)
+  activate D
+  D -> DB : SELECT * FROM demande_stage WHERE id = :id
+  DB --> D : ligne ou vide
+  deactivate D
+
+  alt demande inexistante
+    S --> C : 404 Not Found
+  else
+    S -> S : vérifier le rôle
+    alt rôle différent de RESPONSABLE
+      S --> C : 403 Forbidden
+    else
+      S -> S : vérifier le statut
+      alt statut différent de SOUMISE
+        S --> C : 409 Conflict
+      else
+        S -> S : vérifier le motif si refus
+        alt refus sans motif
+          S --> C : 400 Bad Request
+        else
+          S -> D : enregistrerDecision(id, decision, motif)
+          activate D
+          D -> DB : BEGIN
+          D -> DB : UPDATE demande_stage\nSET statut = :statut,\nmotif_refus = :motif,\ndate_decision = NOW()\nWHERE id = :id
+          alt erreur SQL
+            D -> DB : ROLLBACK
+            DB --> D : erreur
+            D --> S : exception
+            S --> C : 500 Internal Server Error
+          else
+            D -> DB : COMMIT
+            DB --> D : ok
+            D --> S : décision enregistrée
+            S --> C : 200 OK + décision
+          end
+          deactivate D
+        end
+      end
+    end
+  end
+  deactivate S
+end
+
+C --> R : réponse JSON
+deactivate C
+@enduml

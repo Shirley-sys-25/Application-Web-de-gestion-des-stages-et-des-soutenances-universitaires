@@ -1,0 +1,52 @@
+--------------
+INSERT INTO demande_stage
+  (etudiant_id, entreprise_id, statut, motif_refus, date_decision)
+VALUES (2, 2, 'REFUSEE', NULL, NOW())
+--------------
+
+ERROR 4025 (23000) at line 14: CONSTRAINT `ck_demande_motif` failed for `stages_tp3`.`demande_stage`
+--------------
+INSERT INTO demande_stage
+  (etudiant_id, entreprise_id, statut, motif_refus, date_depot)
+VALUES (2, 2, 'EN_ATTENTE', NULL, NOW())
+--------------
+
+ERROR 4025 (23000) at line 19: CONSTRAINT `ck_demande_statut` failed for `stages_tp3`.`demande_stage`
+--------------
+INSERT INTO demande_stage
+  (etudiant_id, entreprise_id, statut, date_depot)
+VALUES (2, 99, 'BROUILLON', NOW())
+--------------
+
+ERROR 1452 (23000) at line 24: Cannot add or update a child row: a foreign key constraint fails (`stages_tp3`.`demande_stage`, CONSTRAINT `fk_demande_entreprise` FOREIGN KEY (`entreprise_id`) REFERENCES `entreprise` (`id`) ON UPDATE CASCADE)
+--------------
+INSERT INTO etudiant (numero_etudiant, nom, prenom, email)
+VALUES ('ETU-2026-004', 'TEST', 'Doublon', 'koffi.adjovi@univ.test')
+--------------
+
+ERROR 1062 (23000) at line 29: Duplicate entry 'koffi.adjovi@univ.test' for key 'uk_etudiant_email'
+--------------
+INSERT INTO soutenance (demande_id, date_heure, salle, duree_minutes)
+VALUES (3, '2026-12-16 09:00:00', 'B12', 45)
+--------------
+
+ERROR 1062 (23000) at line 33: Duplicate entry '3' for key 'uk_soutenance_demande'
+--------------
+INSERT INTO soutenance (demande_id, date_heure, salle, duree_minutes)
+VALUES (4, '2026-12-15 09:00:00', 'B12', 45)
+--------------
+
+ERROR 1062 (23000) at line 37: Duplicate entry '2026-12-15 09:00:00-B12' for key 'uk_soutenance_creneau'
+--------------
+INSERT INTO soutenance (demande_id, date_heure, salle, duree_minutes)
+VALUES (4, '2026-12-17 09:00:00', 'B12', 500)
+--------------
+
+ERROR 4025 (23000) at line 41: CONSTRAINT `ck_soutenance_duree` failed for `stages_tp3`.`soutenance`
++---------------+--------+
+| table_        | lignes |
++---------------+--------+
+| demande_stage |      4 |
+| soutenance    |      1 |
+| etudiant      |      3 |
++---------------+--------+

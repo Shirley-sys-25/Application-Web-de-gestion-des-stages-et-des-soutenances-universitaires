@@ -1,0 +1,63 @@
+@startuml classes
+' Diagramme de classes - TP3 - Projet informatique 2
+' Compilation : java -jar plantuml.jar -tpng -charset UTF-8 classes.puml
+skinparam dpi 200
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam classAttributeIconSize 0
+skinparam linetype polyline
+skinparam nodesep 70
+skinparam ranksep 80
+skinparam classFontStyle bold
+hide circle
+hide empty members
+
+class Etudiant {
+  {field} id : INT
+  {field} numero_etudiant : VARCHAR(20)
+  {field} nom : VARCHAR(60)
+  {field} prenom : VARCHAR(60)
+  {field} email : VARCHAR(100)
+}
+
+class Entreprise {
+  {field} id : INT
+  {field} nom : VARCHAR(80)
+  {field} ville : VARCHAR(60)
+  {field} contact : VARCHAR(100)
+}
+
+class DemandeStage {
+  {field} id : INT
+  {field} statut : ENUM
+  {field} motif_refus : VARCHAR(255)
+  {field} date_depot : DATETIME
+  {field} date_decision : DATETIME
+}
+
+class Encadreur {
+  {field} id : INT
+  {field} nom : VARCHAR(60)
+  {field} prenom : VARCHAR(60)
+  {field} grade : VARCHAR(60)
+}
+
+class Soutenance {
+  {field} id : INT
+  {field} date_heure : DATETIME
+  {field} salle : VARCHAR(20)
+}
+
+Etudiant "1" -- "1..*" DemandeStage : dépose
+Entreprise "1" -- "1..*" DemandeStage : accueille
+Encadreur "0..1" -- "0..*" DemandeStage : encadre
+DemandeStage "1" -- "0..1" Soutenance : donne lieu à
+
+note bottom of Soutenance
+  demande_id est NOT NULL UNIQUE :
+  une demande a au plus une soutenance.
+  (date_heure, salle) est UNIQUE : pas deux
+  soutenances au même créneau dans la même salle.
+end note
+@enduml
