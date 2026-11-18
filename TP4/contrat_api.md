@@ -208,3 +208,10 @@ Règles :
 - `GET /api/sante` : **fonctionnelle**.
 - `GET /api/demandes`, `POST /api/demandes`, `PATCH /api/demandes/{id}/statut` : **contrat rédigé**, routes en attente (`501 Not Implemented`).
 - Le branchement sur `DemandeService`, l'authentification, les transitions et la transaction sont prévus au TP6.
+
+## Mise à jour TP6
+
+Les trois routes métier sont implémentées avec authentification par session, requêtes préparées,
+table des transitions et transaction statut + historique. Des routes d'authentification
+(`POST /api/connexion`, `POST /api/deconnexion`, `GET /api/moi`) et une route étudiant
+(`GET /api/demandes/mes-demandes`) ont été ajoutées. Voir [`../TP6/README.md`](../TP6/README.md).
