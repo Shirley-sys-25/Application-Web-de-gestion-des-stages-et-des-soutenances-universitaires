@@ -17,6 +17,11 @@ validation ou refus motivé, affectation d'un encadreur, programmation des soute
 | `TP1/` | Fiche de cadrage |
 | `TP2/` | Exigences fonctionnelles et non fonctionnelles, matrice de traçabilité |
 | `TP3/` | Diagrammes UML (`.puml` + `.png`), rapport `.docx`, scripts SQL, jeu d'essai et sorties de vérification |
+| `TP4/` | Contrat d'API, ADR-001 et procédure de vérification locale |
+| `public/` | Point d'entrée HTTP (`index.php`) et ressources frontend |
+| `src/` | Contrôleurs, services, dépôts et connexion PDO |
+| `config/` | Chargement de la configuration depuis `.env` |
+| `tests/` | Test de connexion PDO et test de la route de santé |
 
 ## Branches
 
@@ -29,6 +34,7 @@ validation ou refus motivé, affectation d'un encadreur, programmation des soute
 | `tp1` | Fiche de cadrage du projet |
 | `tp2` | Exigences fonctionnelles et non fonctionnelles, matrice de traçabilité |
 | `tp3` | Modèle UML, scripts SQL, jeu d'essai vérifié et rapport |
+| `tp4` | Squelette technique, contrat d'API, route `/api/sante` et ADR-001 |
 
 ## Périmètre retenu (v1)
 
@@ -38,6 +44,35 @@ journal des décisions.
 
 **Exclus** (reportés en v2) : paiement en ligne, notifications SMS, portail entreprise,
 convention signée électroniquement, messagerie interne.
+
+## Lancer le squelette (TP4)
+
+Prérequis : PHP 8.1 ou plus, extension `pdo_mysql`, MySQL ou MariaDB.
+
+```bash
+cp .env.example .env
+# Modifier DB_HOST, DB_PORT, DB_NAME, DB_USER et DB_PASS dans .env
+
+php tests/test_connexion.php
+php -S 127.0.0.1:8000 -t public
+```
+
+Dans un second terminal :
+
+```bash
+curl http://127.0.0.1:8000/api/sante
+```
+
+La route répond `200` si la base est joignable et `503` sinon. Le fichier `.env` contient les
+identifiants locaux : il est ignoré par Git et ne doit jamais être commité.
+
+Les trois routes métier (`GET /api/demandes`, `POST /api/demandes`,
+`PATCH /api/demandes/{id}/statut`) répondent volontairement `501` au TP4. Leur contrat est
+documenté dans [`TP4/contrat_api.md`](TP4/contrat_api.md) et leur implémentation est prévue au TP6.
+
+- Contrat des routes : [`TP4/contrat_api.md`](TP4/contrat_api.md)
+- Décision d'architecture : [`TP4/ADR-001-monolithe-modulaire.md`](TP4/ADR-001-monolithe-modulaire.md)
+- Vérification locale : [`TP4/verification.md`](TP4/verification.md)
 
 ## Diagrammes : sources PlantUML
 
@@ -73,4 +108,5 @@ Les sorties de référence sont dans `TP3/sorties/` (MariaDB 11.8.6, base vide).
 | TP1 | Fiche de cadrage (2 pages) | Fait |
 | TP2 | Exigences (EF, ENF) et matrice de traçabilité | Fait |
 | TP3 | Diagrammes UML, schéma SQL, jeu d'essai et rapport | Fait |
-| TP4 à TP10 | — | À venir |
+| TP4 | Squelette PHP, contrat d'API, route `/api/sante` et ADR-001 | Fait |
+| TP5 à TP10 | — | À venir |
