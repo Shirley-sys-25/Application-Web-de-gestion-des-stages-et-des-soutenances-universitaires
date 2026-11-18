@@ -4,7 +4,11 @@
 **Base URL locale :** `http://localhost:8000`  
 **Format :** JSON UTF-8 (`Content-Type: application/json; charset=utf-8`)  
 **Authentification :** session par cookie (implémentée au TP6)  
-**Rôles :** `ETUDIANT`, `RESPONSABLE`, `SECRETARIAT`, `ADMINISTRATEUR`
+**Rôles :** `ETUDIANT`, `RESPONSABLE`, `SECRETARIAT`, `ADMINISTRATEUR`, `DEVELOPPEUR`
+
+Le rôle `DEVELOPPEUR` est réservé à la maintenance (journalisation, déploiement, diagnostic ; EF-12). Il n'accède à aucune route métier du TP4 ; son périmètre sera précisé avec l'authentification au TP6.
+
+`ADMINISTRATEUR` hérite de `RESPONSABLE` : il dispose des mêmes droits sur les demandes, en plus de la gestion des comptes.
 
 Le contrat est écrit avant le code : il sert de référence commune au backend et au frontend.
 
@@ -33,9 +37,9 @@ Aucun détail technique (SQL, nom d'utilisateur, mot de passe, trace PHP) n'est 
 | Méthode | Chemin | Rôle autorisé | Succès | Erreurs |
 |---|---|---|---|---|
 | `GET` | `/api/sante` | public | `200` | `503` |
-| `GET` | `/api/demandes` | Responsable, Secrétariat | `200` | `400`, `401`, `403` |
+| `GET` | `/api/demandes` | Responsable, Administrateur, Secrétariat | `200` | `400`, `401`, `403` |
 | `POST` | `/api/demandes` | Étudiant | `201` | `400`, `401`, `403` |
-| `PATCH` | `/api/demandes/{id}/statut` | Responsable | `200` | `400`, `401`, `403`, `404`, `409` |
+| `PATCH` | `/api/demandes/{id}/statut` | Responsable, Administrateur | `200` | `400`, `401`, `403`, `404`, `409` |
 
 ---
 
@@ -71,7 +75,7 @@ curl -i http://localhost:8000/api/sante
 
 ## GET /api/demandes
 
-Liste les demandes de stage. Réservée au responsable pédagogique et au secrétariat.
+Liste les demandes de stage. Réservée au responsable pédagogique, à l'administrateur (par héritage) et au secrétariat.
 
 **Paramètres de requête optionnels**
 
@@ -112,7 +116,7 @@ La liste est vide (`[]`) s'il n'y a aucune demande.
 
 - `400` : valeur de `statut` inconnue.
 - `401` : aucune session active.
-- `403` : rôle étudiant.
+- `403` : rôle différent de `RESPONSABLE`, `ADMINISTRATEUR` ou `SECRETARIAT`.
 
 ---
 
@@ -152,7 +156,7 @@ La demande est créée directement au statut `SOUMISE` (« En attente »), avec 
 
 ## PATCH /api/demandes/{id}/statut
 
-Valide ou refuse une demande. Réservée au responsable pédagogique.
+Valide ou refuse une demande. Réservée au responsable pédagogique et à l'administrateur (par héritage).
 
 **Corps attendu — validation**
 
@@ -193,7 +197,7 @@ Règles :
 
 - `400` : décision inconnue, motif absent pour un refus, motif trop long, motif fourni pour une validation.
 - `401` : aucune session active.
-- `403` : rôle différent de `RESPONSABLE`.
+- `403` : rôle différent de `RESPONSABLE` ou `ADMINISTRATEUR`.
 - `404` : demande inexistante.
 - `409` : demande déjà validée, déjà refusée, ou encore en brouillon.
 
