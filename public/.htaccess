@@ -1,0 +1,11 @@
+# Apache : toutes les requêtes passent par index.php.
+# Le serveur intégré de PHP lit index.php directement, ce fichier ne le concerne pas.
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
