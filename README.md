@@ -80,7 +80,9 @@ Les diagrammes sont du texte compilé, pas des dessins à la souris. Chaque diag
 `.puml` (versionné) et en `.png` (produit). Le jar officiel n'est pas versionné.
 
 Le TP3 contient cinq diagrammes : cas d'usage, classes, schéma relationnel, séquence et activité
-du scénario « Valider une demande ».
+du scénario « Valider une demande ». Le diagramme de cas d'usage a été fusionné avec la version
+de terrain : cinq acteurs (dont le développeur pour la maintenance), gestion du compte étudiant,
+et administrateur héritant des droits du responsable.
 
 ```bash
 curl -L -o plantuml.jar \
@@ -88,6 +90,10 @@ curl -L -o plantuml.jar \
 cd TP3
 java -jar ../plantuml.jar -tpng -charset UTF-8 *.puml
 ```
+
+Les diagrammes structurels (cas d'usage, classes, schéma relationnel) nécessitent Graphviz :
+le binaire `dot` doit être installé. Sans lui, PlantUML ne génère que les diagrammes de séquence.
+Sous Ubuntu/Debian : `sudo apt install graphviz`.
 
 ## Reproduire la base
 

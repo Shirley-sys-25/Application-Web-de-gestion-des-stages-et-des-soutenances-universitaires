@@ -13,13 +13,15 @@
 |---|---|---|---|---|
 | EF-01 | Se connecter avec un compte | Tous | Session ouverte avec le rôle de l'utilisateur ; même message d'échec pour un compte inconnu et un mot de passe faux | Must |
 | EF-02 | Soumettre une demande de stage | Étudiant | Demande enregistrée au statut « En attente » et accusé de réception affiché | Must |
-| EF-03 | Valider ou refuser une demande (refus motivé) | Responsable | Statut VALIDEE ou REFUSEE (motif obligatoire), décision ajoutée à l'historique | Must |
+| EF-03 | Valider (confirmer) ou refuser une demande (refus motivé) | Responsable | Statut VALIDEE ou REFUSEE (motif obligatoire), décision ajoutée à l'historique | Must |
 | EF-04 | Affecter un encadreur à une demande validée | Secrétariat | Encadreur associé à la demande validée | Must |
 | EF-05 | Programmer la soutenance d'une demande validée | Secrétariat | Soutenance créée (date, heure, salle), une seule par demande | Must |
 | EF-06 | Consulter l'état de ses demandes | Étudiant | Liste des demandes de l'étudiant connecté avec leur statut | Should |
 | EF-07 | Rechercher un dossier par nom ou statut | Secrétariat | Liste filtrée par nom d'étudiant ou par statut | Should |
 | EF-08 | Consulter l'historique des décisions | Responsable | Liste chronologique des décisions d'un dossier | Could |
 | EF-10 | Gérer les comptes et les rôles | Administrateur | Compte créé, désactivé ou rôle modifié ; un compte désactivé ne peut plus se connecter | Must |
+| EF-11 | Gérer son compte (consulter et modifier ses informations, changer son mot de passe) | Étudiant | Profil de l'étudiant connecté consulté ou modifié ; un utilisateur ne peut modifier que son propre compte | Should |
+| EF-12 | Maintenir l'application (journalisation, déploiement, diagnostic) | Développeur | Journaux consultés, version déployée et opération tracée, sans accès aux données métier | Could |
 
 _Priorité MoSCoW. Statuts d'une demande : BROUILLON, SOUMISE (affichée « En attente »), VALIDEE, REFUSEE._
 
@@ -82,6 +84,8 @@ En tant que responsable, je veux valider ou refuser une demande complète afin q
 | EF-07 | DemandeRepository::rechercher | T-14 recherche par statut VALIDEE → uniquement des demandes VALIDEE. | à faire si temps |
 | EF-08 | DemandeService::historique | T-15 l'historique d'une demande validée contient la décision. | reporté |
 | EF-10 | UtilisateurService (création, désactivation, rôle) | T-22 compte désactivé → connexion refusée ; rôle modifié → droits mis à jour. | à faire |
+| EF-11 | AuthService / UtilisateurService (profil) | T-23 l'étudiant modifie son propre profil → 200 ; T-24 il tente de modifier le profil d'un autre → 403. | à faire si temps |
+| EF-12 | Journalisation, script de déploiement | T-25 déploiement sur environnement de test → version active et journal conservé. | reporté |
 | ENF-01 | DemandeService (contrôle de propriété) | T-16 l'étudiant B lit la demande de l'étudiant A → 403 sans donnée. | à faire |
 | ENF-02 | Services (validation serveur) | T-17 requête directe avec une donnée invalide → 400. | à faire |
 | ENF-03 | Procédure mysqldump / restauration | T-18 export, suppression d'une table de test, restauration : COUNT(*) identiques. | à faire |
@@ -95,5 +99,5 @@ _Une exigence sans test relié n'est pas considérée comme livrée. Statuts : f
 | Décision | Exigences | Justification |
 |---|---|---|
 | Retenues (Must) | EF-01 à EF-05, EF-10, ENF-01 à ENF-03 | D'après la méthode MoSCoW, elles sont indispensables à l'application : sans elles, le parcours connexion → dépôt → validation → affectation → programmation ne fonctionne pas, les dossiers ne sont pas protégés et les comptes ne sont pas maîtrisés. |
-| Si le temps le permet (Should) | EF-06, EF-07, ENF-04, ENF-05 | Elles améliorent le confort et la sécurité mais le parcours fonctionne sans elles. HTTPS demande de configurer un certificat, le verrouillage demande un compteur et une durée. |
-| Reportées (Could) | EF-08 | L'historique est déjà enregistré en base (EF-03) ; sa consultation par écran peut attendre la version 2. |
+| Si le temps le permet (Should) | EF-06, EF-07, EF-11, ENF-04, ENF-05 | Elles améliorent le confort et la sécurité mais le parcours fonctionne sans elles. HTTPS demande de configurer un certificat, le verrouillage demande un compteur et une durée ; la gestion du profil étudiant complète l'autonomie du compte. |
+| Reportées (Could) | EF-08, EF-12 | L'historique est déjà enregistré en base (EF-03) ; sa consultation par écran peut attendre la version 2. La maintenance outillée (journalisation, déploiement) relève de l'exploitation et sera traitée après le socle métier. |
