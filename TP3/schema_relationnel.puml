@@ -1,0 +1,60 @@
+@startuml schema_relationnel
+' Schema relationnel - traduction du diagramme de classes en 5 tables
+skinparam dpi 200
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam classAttributeIconSize 0
+skinparam nodesep 55
+skinparam ranksep 65
+skinparam classFontStyle bold
+hide circle
+hide empty members
+
+class etudiant <<table>> {
+  {field} <b>id</b> : INT <<PK>>
+  {field} numero_etudiant : VARCHAR(20) <<UNIQUE>>
+  {field} nom : VARCHAR(60)
+  {field} prenom : VARCHAR(60)
+  {field} email : VARCHAR(100) <<UNIQUE>>
+}
+
+class entreprise <<table>> {
+  {field} <b>id</b> : INT <<PK>>
+  {field} nom : VARCHAR(80)
+  {field} ville : VARCHAR(60)
+  {field} contact : VARCHAR(100)
+}
+
+class encadreur <<table>> {
+  {field} <b>id</b> : INT <<PK>>
+  {field} nom : VARCHAR(60)
+  {field} prenom : VARCHAR(60)
+  {field} grade : VARCHAR(60)
+  {field} email : VARCHAR(100) <<UNIQUE>>
+}
+
+class demande_stage <<table>> {
+  {field} <b>id</b> : INT <<PK>>
+  {field} etudiant_id : INT <<FK>>
+  {field} entreprise_id : INT <<FK>>
+  {field} encadreur_id : INT <<FK, NULL>>
+  {field} statut : VARCHAR(10)
+  {field} motif_refus : VARCHAR(255)
+  {field} date_depot : DATETIME
+  {field} date_decision : DATETIME
+}
+
+class soutenance <<table>> {
+  {field} <b>id</b> : INT <<PK>>
+  {field} demande_id : INT <<FK, UNIQUE>>
+  {field} date_heure : DATETIME
+  {field} salle : VARCHAR(20)
+  {field} duree_minutes : SMALLINT
+}
+
+etudiant "1" -- "0..*" demande_stage : etudiant_id
+entreprise "1" -- "0..*" demande_stage : entreprise_id
+encadreur "0..1" -- "0..*" demande_stage : encadreur_id
+demande_stage "1" -- "0..1" soutenance : demande_id
+@enduml
