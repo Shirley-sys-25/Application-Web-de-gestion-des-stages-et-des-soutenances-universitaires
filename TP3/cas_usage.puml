@@ -1,44 +1,63 @@
 @startuml cas_usage
 ' Diagramme de cas d'utilisation - TP3 - Projet informatique 2
-' UC01 est inclus par tous les autres cas : aucun acces sans session.
+' Version fusionnée : socle TP3 + acteur Développeur / maintenance.
+' UC01 est inclus par tous les cas métier : aucun accès sans session.
 skinparam dpi 200
 skinparam monochrome true
 skinparam shadowing false
 skinparam defaultFontName SansSerif
 skinparam packageStyle rectangle
-skinparam nodesep 16
-skinparam ranksep 28
+skinparam nodesep 18
+skinparam ranksep 30
 left to right direction
 
 actor "Étudiant" as E
 actor "Responsable\npédagogique" as R
 actor "Secrétariat" as S
 actor "Administrateur" as A
+actor "Développeur" as D
+
+' L'administrateur hérite des droits du responsable pédagogique.
+A --|> R
 
 rectangle "Application de gestion des stages et des soutenances" {
-  usecase "UC02\nSoumettre une\ndemande de stage" as UC1
-  usecase "UC03\nConsulter l'état de\nses demandes" as UC2
-  usecase "UC04\nValider ou refuser\nune demande" as UC3
-  usecase "UC05\nAffecter un\nencadreur" as UC4
-  usecase "UC06\nProgrammer une\nsoutenance" as UC5
-  usecase "UC07\nRechercher\nun dossier" as UC6
-  usecase "UC08\nGérer les comptes\net les rôles" as UC7
-  usecase "UC01\nSe connecter" as UC0
+  usecase "UC01\nSe connecter" as UC01
+  together {
+    usecase "UC02\nSoumettre une\ndemande de stage" as UC02
+    usecase "UC03\nConsulter l'état de\nses demandes" as UC03
+    usecase "UC09\nGérer son compte" as UC09
+  }
+  together {
+    usecase "UC04\nGérer une demande\n(confirmer ou refuser)" as UC04
+    usecase "UC06\nProgrammer une\nsoutenance" as UC06
+  }
+  together {
+    usecase "UC05\nAffecter un\nencadreur" as UC05
+    usecase "UC07\nRechercher\nun dossier" as UC07
+  }
+  usecase "UC08\nGérer les comptes\net les rôles" as UC08
+  usecase "UC10\nMaintenir\nl'application" as UC10
 }
 
-E --> UC1
-E --> UC2
-R --> UC3
-S --> UC4
-S --> UC5
-S --> UC6
-A --> UC7
+E --> UC02
+E --> UC03
+E --> UC09
+R --> UC04
+R --> UC06
+S --> UC05
+S --> UC06
+S --> UC07
+A --> UC08
+D --> UC10
 
-UC1 ..> UC0 : <<include>>
-UC2 ..> UC0 : <<include>>
-UC3 ..> UC0 : <<include>>
-UC4 ..> UC0 : <<include>>
-UC5 ..> UC0 : <<include>>
-UC6 ..> UC0 : <<include>>
-UC7 ..> UC0 : <<include>>
+' UC04 couvre les deux issues (confirmer ou refuser) ; le détail est dans le tableau du rapport.
+UC02 ..> UC01 : <<include>>
+UC03 ..> UC01 : <<include>>
+UC04 ..> UC01 : <<include>>
+UC05 ..> UC01 : <<include>>
+UC06 ..> UC01 : <<include>>
+UC07 ..> UC01 : <<include>>
+UC08 ..> UC01 : <<include>>
+UC09 ..> UC01 : <<include>>
+UC10 ..> UC01 : <<include>>
 @enduml
