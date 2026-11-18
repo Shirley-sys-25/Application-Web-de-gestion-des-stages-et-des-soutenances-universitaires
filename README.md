@@ -44,8 +44,12 @@ convention signée électroniquement, messagerie interne.
 Les diagrammes sont du texte compilé, pas des dessins à la souris. Chaque diagramme existe en
 `.puml` (versionné) et en `.png` (produit). Le jar officiel n'est pas versionné.
 
-Le TP3 contient cinq diagrammes : cas d'usage, classes, schéma relationnel, séquence et activité
-du scénario « Valider une demande ».
+Le TP3 contient cinq diagrammes : cas d'usage, classes, schéma relationnel, séquence de connexion
+et activité de validation d'une demande. Le diagramme de cas d'usage a été corrigé d'après la
+version de terrain : quatre acteurs (étudiant, responsable, administrateur et développeur),
+suppression du secrétariat (ses tâches — affectation d'un encadreur et recherche d'un dossier —
+sont rattachées au responsable), gestion du compte étudiant, et administrateur héritant des droits
+du responsable. Le diagramme de séquence reproduit la connexion dessinée au tableau blanc.
 
 ```bash
 curl -L -o plantuml.jar \

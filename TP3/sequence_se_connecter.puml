@@ -1,0 +1,34 @@
+@startuml sequence_se_connecter
+' Diagramme de séquence - scénario "Se connecter"
+' Reproduit le tableau blanc : étudiant -> application -> base de données.
+skinparam dpi 200
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam responseMessageBelowArrow true
+skinparam defaultFontSize 20
+skinparam sequenceMessageAlign left
+autonumber
+
+actor "Étudiant" as E
+participant "Application" as A
+database "Base de données" as DB
+
+E -> A : Se connecter()
+activate A
+A --> E : (Entrez les identifiants)
+E -> A : envoyer(login, pwd)
+A -> DB : Récupération(pwd)
+activate DB
+DB --> A : envoyer(pwd)
+deactivate DB
+A -> A : vérifier(pwd)
+loop [si échec <= 3]
+  alt [PW correct]
+    A --> E : connexion réussie
+  else [PW incorrect]
+    A --> E : connexion échouée
+  end
+end
+deactivate A
+@enduml
