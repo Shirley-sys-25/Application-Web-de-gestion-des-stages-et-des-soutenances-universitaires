@@ -2,7 +2,7 @@
 
 **Projet :** Application Web de gestion des stages universitaires
 **Cours :** Projet informatique 2 – L3 SIL
-**Groupe :** _à compléter_
+**Groupe :** ANAGO Shirley, DAGNON Christie, KARIMOU NARO Sabalimath
 **Données :** fictives uniquement
 
 ---
@@ -19,6 +19,7 @@
 | EF-06 | Consulter l'état de ses demandes | Étudiant | Liste des demandes de l'étudiant connecté avec leur statut | Should |
 | EF-07 | Rechercher un dossier par nom ou statut | Secrétariat | Liste filtrée par nom d'étudiant ou par statut | Should |
 | EF-08 | Consulter l'historique des décisions | Responsable | Liste chronologique des décisions d'un dossier | Could |
+| EF-10 | Gérer les comptes et les rôles | Administrateur | Compte créé, désactivé ou rôle modifié ; un compte désactivé ne peut plus se connecter | Must |
 
 _Priorité MoSCoW. Statuts d'une demande : BROUILLON, SOUMISE (affichée « En attente »), VALIDEE, REFUSEE._
 
@@ -80,6 +81,7 @@ En tant que responsable, je veux valider ou refuser une demande complète afin q
 | EF-06 | DemandeController::mesDemandes | T-13 l'étudiant connecté ne voit que ses propres demandes. | à faire si temps |
 | EF-07 | DemandeRepository::rechercher | T-14 recherche par statut VALIDEE → uniquement des demandes VALIDEE. | à faire si temps |
 | EF-08 | DemandeService::historique | T-15 l'historique d'une demande validée contient la décision. | reporté |
+| EF-10 | UtilisateurService (création, désactivation, rôle) | T-22 compte désactivé → connexion refusée ; rôle modifié → droits mis à jour. | à faire |
 | ENF-01 | DemandeService (contrôle de propriété) | T-16 l'étudiant B lit la demande de l'étudiant A → 403 sans donnée. | à faire |
 | ENF-02 | Services (validation serveur) | T-17 requête directe avec une donnée invalide → 400. | à faire |
 | ENF-03 | Procédure mysqldump / restauration | T-18 export, suppression d'une table de test, restauration : COUNT(*) identiques. | à faire |
@@ -92,6 +94,6 @@ _Une exigence sans test relié n'est pas considérée comme livrée. Statuts : f
 
 | Décision | Exigences | Justification |
 |---|---|---|
-| Retenues (Must) | EF-01 à EF-05, ENF-01 à ENF-03 | D'après la méthode MoSCoW, elles sont indispensables à l'application : sans elles, le parcours connexion → dépôt → validation → affectation → programmation ne fonctionne pas, et les dossiers ne sont pas protégés. |
+| Retenues (Must) | EF-01 à EF-05, EF-10, ENF-01 à ENF-03 | D'après la méthode MoSCoW, elles sont indispensables à l'application : sans elles, le parcours connexion → dépôt → validation → affectation → programmation ne fonctionne pas, les dossiers ne sont pas protégés et les comptes ne sont pas maîtrisés. |
 | Si le temps le permet (Should) | EF-06, EF-07, ENF-04, ENF-05 | Elles améliorent le confort et la sécurité mais le parcours fonctionne sans elles. HTTPS demande de configurer un certificat, le verrouillage demande un compteur et une durée. |
 | Reportées (Could) | EF-08 | L'historique est déjà enregistré en base (EF-03) ; sa consultation par écran peut attendre la version 2. |
