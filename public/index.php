@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Controllers\DemandeController;
-use App\Controllers\SanteController;
+use App\Container;
+use App\Exceptions\HttpException;
 
 /**
  * Point d'entrée unique de l'API.
@@ -13,6 +13,23 @@ use App\Controllers\SanteController;
  */
 
 $config = require __DIR__ . '/../bootstrap.php';
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    ini_set('session.use_strict_mode', '1');
+    session_name('STAGES_SESSION');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (($_SERVER['SERVER_PORT'] ?? '') === '443'),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+}
+
+$conteneur = new Container($config);
 
 $methode = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $chemin = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
@@ -26,18 +43,36 @@ try {
             'body' => [
                 'application' => 'Gestion des stages et des soutenances',
                 'sante' => '/api/sante',
-                'contrat' => 'TP4/contrat_api.md',
+                'connexion' => '/api/connexion',
+                'demandes' => '/api/demandes',
+                'contrat' => 'TP6/README.md',
             ],
         ],
 
-        $methode === 'GET' && $chemin === '/api/sante' => (new SanteController($config))->verifier(),
+        $methode === 'GET' && $chemin === '/api/sante'
+            => $conteneur->santeController()->verifier(),
 
-        $methode === 'GET' && $chemin === '/api/demandes' => (new DemandeController())->lister(),
-        $methode === 'POST' && $chemin === '/api/demandes' => (new DemandeController())->creer(),
+        $methode === 'POST' && $chemin === '/api/connexion'
+            => $conteneur->authController()->connexion(),
+
+        $methode === 'POST' && $chemin === '/api/deconnexion'
+            => $conteneur->authController()->deconnexion(),
+
+        $methode === 'GET' && $chemin === '/api/moi'
+            => $conteneur->authController()->moi(),
+
+        $methode === 'GET' && $chemin === '/api/demandes'
+            => $conteneur->demandeController()->lister(),
+
+        $methode === 'GET' && $chemin === '/api/demandes/mes-demandes'
+            => $conteneur->demandeController()->mesDemandes(),
+
+        $methode === 'POST' && $chemin === '/api/demandes'
+            => $conteneur->demandeController()->creer(),
 
         $methode === 'PATCH'
             && preg_match('#^/api/demandes/([1-9][0-9]*)/statut$#', $chemin, $correspondances) === 1
-            => (new DemandeController())->changerStatut((int) $correspondances[1]),
+            => $conteneur->demandeController()->changerStatut((int) $correspondances[1]),
 
         default => [
             'status' => 404,
@@ -46,6 +81,13 @@ try {
             ],
         ],
     };
+} catch (HttpException $e) {
+    $reponse = [
+        'status' => $e->status,
+        'body' => [
+            'erreur' => $e->getMessage(),
+        ],
+    ];
 } catch (Throwable $e) {
     error_log('[api] ' . $e->getMessage());
 
@@ -60,6 +102,7 @@ try {
 http_response_code($reponse['status']);
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
+header('Cache-Control: no-store');
 
 $json = json_encode(
     $reponse['body'],

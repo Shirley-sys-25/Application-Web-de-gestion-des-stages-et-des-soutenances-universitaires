@@ -1,0 +1,219 @@
+{
+  "info": {
+    "name": "TP6 - API des demandes",
+    "_postman_id": "c7b9d2a1-4f3e-4d6b-9a10-8f2e1c3d4b55",
+    "description": "Collection Postman pour le TP6 (authentification, création, lecture et validation des demandes).\n\nPrérequis :\n1. Recharger la base : TP3/001_schema.sql, TP3/002_seed.sql, TP6/001_schema_tp6.sql, TP6/002_seed_tp6.sql.\n2. Lancer le serveur : php -S 127.0.0.1:8000 -t public\n3. Importer la collection et exécuter les dossiers dans l'ordre.\n\nPostman conserve le cookie de session STAGES_SESSION automatiquement.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "demande_id", "value": "2" }
+  ],
+  "item": [
+    {
+      "name": "Santé",
+      "item": [
+        {
+          "name": "GET /api/sante",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/sante"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scénario étudiant",
+      "item": [
+        {
+          "name": "Connexion étudiant",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"etudiant1@univ.test\",\n  \"mot_de_passe\": \"etudiant123\"\n}"
+            },
+            "url": "{{base_url}}/api/connexion"
+          }
+        },
+        {
+          "name": "Qui suis-je (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/moi"
+          }
+        },
+        {
+          "name": "Mes demandes (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/demandes/mes-demandes"
+          }
+        },
+        {
+          "name": "Créer une demande (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Statut 201', function () { pm.response.to.have.status(201); });",
+                  "var json = pm.response.json();",
+                  "if (json && json.id) { pm.collectionVariables.set('demande_id', String(json.id)); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entreprise_id\": 1\n}"
+            },
+            "url": "{{base_url}}/api/demandes"
+          }
+        },
+        {
+          "name": "Créer une demande - entreprise inconnue (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entreprise_id\": 999\n}"
+            },
+            "url": "{{base_url}}/api/demandes"
+          }
+        },
+        {
+          "name": "Lister les demandes en étudiant (403)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/demandes"
+          }
+        },
+        {
+          "name": "Déconnexion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{base_url}}/api/deconnexion"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scénario responsable",
+      "item": [
+        {
+          "name": "Connexion responsable",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"responsable@univ.test\",\n  \"mot_de_passe\": \"responsable123\"\n}"
+            },
+            "url": "{{base_url}}/api/connexion"
+          }
+        },
+        {
+          "name": "Lister les demandes (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/demandes"
+          }
+        },
+        {
+          "name": "Lister les demandes SOUMISES (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/demandes?statut=SOUMISE"
+          }
+        },
+        {
+          "name": "Changer le statut - demande inexistante (404)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"VALIDEE\"\n}"
+            },
+            "url": "{{base_url}}/api/demandes/999/statut"
+          }
+        },
+        {
+          "name": "Valider la demande créée (200)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"VALIDEE\"\n}"
+            },
+            "url": "{{base_url}}/api/demandes/{{demande_id}}/statut"
+          }
+        },
+        {
+          "name": "Valider à nouveau la même demande (409)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"VALIDEE\"\n}"
+            },
+            "url": "{{base_url}}/api/demandes/{{demande_id}}/statut"
+          }
+        },
+        {
+          "name": "Refuser sans motif - demande 2 (400)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"REFUSEE\"\n}"
+            },
+            "url": "{{base_url}}/api/demandes/2/statut"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sans session",
+      "item": [
+        {
+          "name": "Créer une demande sans cookie (401)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entreprise_id\": 1\n}"
+            },
+            "url": "{{base_url}}/api/demandes"
+          }
+        },
+        {
+          "name": "Qui suis-je sans cookie (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/moi"
+          }
+        }
+      ]
+    }
+  ]
+}
