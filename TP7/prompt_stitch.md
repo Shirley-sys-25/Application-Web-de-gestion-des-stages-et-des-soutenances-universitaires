@@ -1,5 +1,7 @@
 # TP7 — Brief et prompt pour Google Stitch
 
+> Variante glassmorphism et corrections de structure : voir `TP7/prompt_correction_glassmorphism.md`.
+
 ## 1. Décisions de design
 
 | Élément | Choix |
