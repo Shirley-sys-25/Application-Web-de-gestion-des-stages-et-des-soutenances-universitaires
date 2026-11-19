@@ -1,0 +1,269 @@
+<!DOCTYPE html><html class="h-full" lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_blank" name="shell-type">
+<title>Connexion — UniStage Portail des Stages &amp; Soutenances</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Sora:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+    @layer base {
+      html, body { margin: 0; padding: 0; height: 100%; }
+      body { overscroll-behavior: none; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "inverse-primary": "#c3c0ff",
+            "surface-dim": "#d3daea",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#e2dfff",
+            "tertiary-fixed-dim": "#4edea3",
+            "secondary-container": "#ff6b6b",
+            "primary-fixed-dim": "#c3c0ff",
+            "on-background": "#151c27",
+            "on-tertiary-container": "#67f4b7",
+            "surface-container-highest": "#dce2f3",
+            "on-secondary": "#ffffff",
+            "secondary-fixed-dim": "#ffb3b0",
+            "on-primary-fixed-variant": "#3323cc",
+            "outline-variant": "#c7c4d8",
+            "surface-tint": "#4d44e3",
+            "outline": "#777587",
+            "on-primary-fixed": "#0f0069",
+            "surface-container-high": "#e2e8f8",
+            "on-tertiary-fixed-variant": "#005236",
+            "on-primary": "#ffffff",
+            "on-surface": "#151c27",
+            "surface-container-low": "#f0f3ff",
+            "inverse-on-surface": "#ebf1ff",
+            "primary": "#3525cd",
+            "on-secondary-container": "#6d0010",
+            "tertiary-fixed": "#6ffbbe",
+            "on-secondary-fixed": "#410006",
+            "tertiary": "#005338",
+            "surface": "#f9f9ff",
+            "inverse-surface": "#2a313d",
+            "on-secondary-fixed-variant": "#8c1520",
+            "error": "#ba1a1a",
+            "on-surface-variant": "#464555",
+            "secondary": "#ae2f34",
+            "background": "#f9f9ff",
+            "secondary-fixed": "#ffdad8",
+            "surface-bright": "#f9f9ff",
+            "surface-container": "#e7eefe",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#006e4b",
+            "on-tertiary": "#ffffff",
+            "surface-variant": "#dce2f3",
+            "primary-container": "#4f46e5",
+            "on-error": "#ffffff",
+            "on-primary-container": "#dad7ff",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed": "#002113"
+          },
+          fontFamily: {
+            "display": ["Sora", "sans-serif"],
+            "headline-lg": ["Sora", "sans-serif"],
+            "headline-md": ["Sora", "sans-serif"],
+            "headline-sm": ["Sora", "sans-serif"],
+            "title": ["Sora", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-bold": ["Inter", "sans-serif"],
+            "label-md": ["Inter", "sans-serif"],
+            "label-sm": ["Inter", "sans-serif"],
+            "caption": ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased min-h-screen" style="background: linear-gradient(135deg, rgb(238, 242, 255) 0%, rgb(253, 242, 248) 50%, rgb(236, 253, 245) 100%); min-height: 100vh; position: relative;">
+<div class="fixed inset-0 pointer-events-none overflow-hidden z-0"><div style="position:absolute;top:-10%;left:25%;width:420px;height:420px;border-radius:50%;background:#4F46E5;opacity:0.18;filter:blur(90px);"></div><div style="position:absolute;bottom:10%;right:15%;width:460px;height:460px;border-radius:50%;background:#FF6B6B;opacity:0.14;filter:blur(100px);"></div><div style="position:absolute;top:40%;right:35%;width:380px;height:380px;border-radius:50%;background:#10B981;opacity:0.15;filter:blur(90px);"></div></div><main class="w-full min-h-screen flex flex-col lg:flex-row relative z-10">
+<!-- Panneau gauche : Illustration & Branding académique haut de gamme (45%) -->
+<section class="lg:w-[46%] xl:w-[44%] bg-gradient-to-br from-[#241793] via-[#3525cd] to-[#4f46e5] text-on-primary p-8 sm:p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden shrink-0">
+<!-- Formes géométriques décoratives discrètes en arrière-plan -->
+<div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-indigo-400/10 blur-3xl pointer-events-none"></div>
+<div class="absolute top-1/2 -left-20 w-80 h-80 rounded-full bg-emerald-400/10 blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-24 right-12 w-96 h-96 rounded-full border border-white/10 pointer-events-none"></div>
+<div class="absolute -bottom-40 right-0 w-[500px] h-[500px] rounded-full border border-white/5 pointer-events-none"></div>
+<!-- Contenu haut -->
+<div class="relative z-10 flex flex-col gap-8 max-w-xl">
+<!-- Logo & Titre de portail -->
+<div class="flex items-center gap-4">
+<div class="w-13 h-13 p-3 rounded-2xl bg-white shadow-lg shadow-indigo-950/20 flex items-center justify-center shrink-0">
+<!-- Icône SVG académique / diplôme moderne -->
+<svg class="w-7 h-7 text-[#3525cd]" fill="currentColor" viewBox="0 0 24 24">
+<path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18C5 19.94 8.13 22 12 22C15.87 22 19 19.94 19 17.18V13.18L12 17L5 13.18Z"></path>
+</svg>
+</div>
+<div><div class="flex items-center gap-2"><span class="font-headline-sm text-2xl font-bold tracking-tight text-white" style="font-family: 'Sora', sans-serif;">UniStage</span><span class="px-2 py-0.5 rounded text-[11px] font-semibold tracking-wide uppercase bg-white/20 text-white shadow-sm">Portail</span></div><p class="text-xs text-indigo-100 font-medium mt-0.5">Portail officiel des Stages &amp; Soutenances</p></div>
+</div>
+<!-- Badge de promotion -->
+<div class="inline-flex items-center gap-2.5 self-start bg-white/10 hover:bg-white/15 backdrop-blur-md px-3.5 py-1.5 rounded-full text-white text-xs font-semibold border border-white/15 transition-colors"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>Session académique 2026–2027</span></div>
+<!-- Accroche principale -->
+<div class="space-y-3 pt-2">
+<h1 class="font-headline-lg text-3xl sm:text-4xl lg:text-[40px] font-bold leading-tight tracking-tight text-white">
+            Déposez et suivez votre demande de stage en toute simplicité.
+          </h1>
+<p class="text-indigo-100/80 text-base leading-relaxed max-w-lg">
+            Plateforme centralisée pour la soumission des fiches de stage, la validation pédagogique et l'attribution des encadreurs SIL.
+          </p>
+</div>
+<!-- 3 points clés visuels bien espacés -->
+<div class="flex flex-col gap-4.5 pt-4">
+<div class="flex items-start gap-4 p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm transition-all hover:bg-white/10">
+<div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0 text-white shadow-inner">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<p class="text-white font-semibold text-sm">Dépôt rapide en quelques clics</p>
+<p class="text-indigo-200/80 text-xs mt-0.5">Formulaire simplifié avec pré-remplissage et justificatifs numériques.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm transition-all hover:bg-white/10">
+<div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0 text-white shadow-inner">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+</div>
+<div>
+<p class="text-white font-semibold text-sm">Suivi du statut en temps réel</p>
+<p class="text-indigo-200/80 text-xs mt-0.5">Notification à chaque étape : soumis, à corriger, validé ou refusé.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm transition-all hover:bg-white/10">
+<div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0 text-white shadow-inner">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<p class="text-white font-semibold text-sm">Validation officielle par votre responsable SIL</p>
+<p class="text-indigo-200/80 text-xs mt-0.5">Conformité aux exigences académiques et convention de stage directe.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Pied de page gauche discret -->
+<div class="relative z-10 pt-10 mt-10 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-indigo-200/70 gap-2">
+<span>Département Informatique &amp; Génie Logiciel</span>
+<span>© 2026 UniStage</span>
+</div>
+</section>
+<!-- Panneau droit : Formulaire d'authentification desktop moderne (55%) -->
+<section class="lg:w-[54%] xl:w-[56%] flex flex-col justify-between p-6 sm:p-12 lg:p-16 min-h-screen" style="background: transparent;">
+<div class="max-w-md w-full mx-auto my-auto py-6" style="background: rgba(255, 255, 255, 0.68); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(15, 23, 42, 0.08) 0px 20px 50px; border-radius: 16px; padding: 2rem;">
+<!-- En-tête formulaire -->
+<div class="mb-7">
+<div class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+<span class="material-symbols-outlined text-sm">lock_open</span>
+<span>Espace Sécurisé</span>
+</div>
+<h2 class="font-headline-md text-2xl sm:text-[28px] text-on-surface font-bold tracking-tight" style="font-family: Sora, sans-serif;">
+            Connexion à votre espace
+          </h2>
+<p class="font-body-md text-sm sm:text-base text-on-surface-variant mt-1.5">
+            Accédez à votre dossier de stage L3 SIL
+          </p>
+</div>
+<!-- Alerte d'erreur claire et bien stylisée -->
+<div class="mb-6 flex items-start gap-3 p-4 rounded-xl bg-[#fee2e2]/70 border border-red-200 text-red-900 transition-all shadow-sm" id="login-error-banner" role="alert">
+<span class="material-symbols-outlined text-red-600 shrink-0 text-xl mt-0.5" style="font-variation-settings: 'FILL' 1;">error</span>
+<div class="flex-1 text-sm font-medium leading-snug">
+            Email ou mot de passe incorrect. Veuillez vérifier vos identifiants.
+          </div>
+<button aria-label="Fermer le message d'erreur" class="text-red-600/70 hover:text-red-900 p-0.5 rounded transition-colors" onclick="document.getElementById('login-error-banner').style.display='none'" type="button">
+<span class="material-symbols-outlined text-base">close</span>
+</button>
+</div>
+<!-- Formulaire de connexion -->
+<form class="space-y-5" id="login-form" onsubmit="event.preventDefault();">
+<!-- Champ Identifiant Email -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-sm font-semibold text-on-surface flex items-center justify-between" for="email">
+<span>Adresse email universitaire <span class="text-red-600">*</span></span>
+<span class="text-xs font-normal text-on-surface-variant">Format : @univ.test</span>
+</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none text-xl">mail</span>
+<input class="w-full h-12 pl-11 pr-4 rounded-xl bg-white border border-outline-variant/60 text-on-surface placeholder:text-outline/70 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary font-body-md text-sm transition-all" id="email" name="email" placeholder="koffi.adjovi@univ.test" required="" type="email" value="etudiant1@univ.test">
+</div>
+</div>
+<!-- Champ Mot de passe -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-sm font-semibold text-on-surface" for="password">
+                Mot de passe <span class="text-red-600">*</span>
+</label>
+<a class="text-xs font-medium text-primary hover:text-primary-container hover:underline transition-colors" href="#reset-password">
+                Mot de passe oublié ?
+              </a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none text-xl">lock</span>
+<input class="w-full h-12 pl-11 pr-11 rounded-xl bg-white border border-outline-variant/60 text-on-surface placeholder:text-outline/70 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary font-body-md text-sm transition-all" id="password" name="password" placeholder="••••••••••••" required="" type="password" value="etudiant123">
+<button aria-label="Afficher ou masquer le mot de passe" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface p-1 transition-colors cursor-pointer" id="toggle-pwd-btn" onclick="const input = document.getElementById('password'); const isPwd = input.type === 'password'; input.type = isPwd ? 'text' : 'password'; document.getElementById('toggle-pwd-icon').textContent = isPwd ? 'visibility_off' : 'visibility';" type="button">
+<span class="material-symbols-outlined text-xl" id="toggle-pwd-icon">visibility</span>
+</button>
+</div>
+</div>
+<!-- Bouton de soumission -->
+<button class="w-full h-12 bg-primary hover:bg-[#2c1fb0] active:scale-[0.99] text-white font-semibold text-sm rounded-xl shadow-md shadow-indigo-600/20 hover:shadow-lg transition-all flex items-center justify-center gap-2 group cursor-pointer mt-2" type="submit">
+<span>Se connecter</span>
+<span class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</form>
+<!-- Comptes de démonstration interactifs -->
+<div class="mt-8 p-4.5 rounded-2xl bg-white border border-outline-variant/40 shadow-sm" style="background: rgba(255, 255, 255, 0.55); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.8);">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2 text-on-surface font-semibold text-xs uppercase tracking-wider">
+<span class="material-symbols-outlined text-primary text-base">badge</span>
+<span>Comptes de démonstration</span>
+</div>
+<span class="text-[11px] text-on-surface-variant font-medium">Cliquez pour tester</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+<!-- Compte Étudiant -->
+<button class="text-left p-3 rounded-xl border border-indigo-100 bg-[#f4f6ff] hover:bg-[#ebf0ff] hover:border-indigo-300 transition-all cursor-pointer group flex flex-col justify-between" onclick="document.getElementById('email').value='etudiant1@univ.test'; document.getElementById('password').value='etudiant123';" type="button">
+<div class="flex items-center justify-between w-full mb-1">
+<span class="text-xs font-bold text-primary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Étudiant
+                </span>
+<span class="material-symbols-outlined text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">input</span>
+</div>
+<span class="text-xs font-medium text-on-surface block">ADJOVI Koffi</span>
+<span class="text-[11px] text-on-surface-variant block font-mono mt-0.5 truncate">etudiant1@univ.test</span>
+<span class="text-[10px] text-outline block mt-1">MDP : etudiant123</span>
+</button>
+<!-- Compte Responsable -->
+<button class="text-left p-3 rounded-xl border border-emerald-100 bg-[#f0fbf5] hover:bg-[#e4f7ee] hover:border-emerald-300 transition-all cursor-pointer group flex flex-col justify-between" onclick="document.getElementById('email').value='responsable@univ.test'; document.getElementById('password').value='responsable123';" type="button">
+<div class="flex items-center justify-between w-full mb-1">
+<span class="text-xs font-bold text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  Resp. pédagogique
+                </span>
+<span class="material-symbols-outlined text-xs text-tertiary opacity-0 group-hover:opacity-100 transition-opacity">input</span>
+</div>
+<span class="text-xs font-medium text-on-surface block">Pr. K. MENSAH</span>
+<span class="text-[11px] text-on-surface-variant block font-mono mt-0.5 truncate">responsable@univ.test</span>
+<span class="text-[10px] text-outline block mt-1">MDP : responsable123</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer institutionnel -->
+<footer class="pt-6 text-center text-xs text-on-surface-variant/80 border-t border-slate-200/60 max-w-md w-full mx-auto">
+<p>Données fictives – projet universitaire L3 SIL • Université de Démonstration • Année universitaire 2026-2027</p>
+</footer>
+</section>
+</main>
+
+
+</body></html>
