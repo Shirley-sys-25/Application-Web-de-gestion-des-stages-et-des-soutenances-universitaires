@@ -36,6 +36,20 @@ $chemin = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $chemin = is_string($chemin) ? $chemin : '/';
 $chemin = rtrim($chemin, '/') ?: '/';
 
+// Le TP7 sert une interface statique (HTML/CSS/JS) sur la racine.
+// Les routes /api/... restent exclusivement JSON.
+if ($methode === 'GET' && $chemin === '/') {
+    $fichier = __DIR__ . '/index.html';
+
+    if (is_file($fichier)) {
+        header('Content-Type: text/html; charset=utf-8');
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: no-store');
+        readfile($fichier);
+        exit;
+    }
+}
+
 try {
     $reponse = match (true) {
         $methode === 'GET' && $chemin === '/' => [
@@ -66,6 +80,9 @@ try {
 
         $methode === 'GET' && $chemin === '/api/demandes/mes-demandes'
             => $conteneur->demandeController()->mesDemandes(),
+
+        $methode === 'GET' && $chemin === '/api/entreprises'
+            => $conteneur->entrepriseController()->lister(),
 
         $methode === 'POST' && $chemin === '/api/demandes'
             => $conteneur->demandeController()->creer(),

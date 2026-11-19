@@ -19,7 +19,8 @@ validation ou refus motivé, affectation d'un encadreur, programmation des soute
 | `TP3/` | Diagrammes UML (`.puml` + `.png`), rapport `.docx`, scripts SQL, jeu d'essai et sorties de vérification |
 | `TP4/` | Contrat d'API initial, ADR-001 et procédure de vérification locale |
 | `TP6/` | Scripts SQL (`utilisateur`, `historique_demande`), collection Postman et preuves de tests |
-| `public/` | Point d'entrée HTTP (`index.php`) et ressources frontend |
+| `TP7/` | Maquettes des 7 écrans et aperçu |
+| `public/` | Point d'entrée HTTP (`index.php`, `index.html`) et frontend (HTML/CSS/JS) |
 | `src/` | Contrôleurs, services, dépôts, exceptions HTTP et connexion PDO |
 | `config/` | Chargement de la configuration depuis `.env` |
 | `tests/` | Tests de connexion, transitions et scénarios HTTP de l'API |
@@ -37,6 +38,7 @@ validation ou refus motivé, affectation d'un encadreur, programmation des soute
 | `tp3` | Modèle UML, scripts SQL, jeu d'essai vérifié et rapport |
 | `tp4` | Squelette technique, contrat d'API, route `/api/sante` et ADR-001 |
 | `tp6` | API des demandes, authentification, transactions et preuves de tests |
+| `tp7` | Maquettes alignées sur l'API et frontend accessible des parcours étudiant / responsable |
 
 ## Périmètre retenu (v1)
 
@@ -47,7 +49,7 @@ journal des décisions.
 **Exclus** (reportés en v2) : paiement en ligne, notifications SMS, portail entreprise,
 convention signée électroniquement, messagerie interne.
 
-## Lancer l'application (TP6)
+## Lancer l'application (TP6/TP7)
 
 Prérequis : PHP 8.1 ou plus, extension `pdo_mysql`, MySQL ou MariaDB.
 
@@ -69,9 +71,19 @@ php tests/test_transitions.php
 php -S 127.0.0.1:8000 -t public
 ```
 
+Le frontend TP7 est servi par la même commande : ouvrir `http://127.0.0.1:8000/`.
+Il propose le parcours étudiant (connexion, mes demandes, nouvelle demande, détail) et le parcours
+responsable (demandes à traiter, décision, confirmation). Le sélecteur d'entreprise utilise
+`GET /api/entreprises` ; les autres appels sont `POST /api/connexion`, `POST /api/deconnexion`,
+`GET /api/moi`, `GET /api/demandes/mes-demandes`, `POST /api/demandes`,
+`GET /api/demandes` et `PATCH /api/demandes/{id}/statut`. Les maquettes sont dans
+[`TP7/maquettes/`](TP7/maquettes/) et l'aperçu dans
+[`TP7/maquettes/apercu_7_ecrans.png`](TP7/maquettes/apercu_7_ecrans.png).
+
 L'API implémente l'authentification par session, la création, la lecture et la validation/refus
 des demandes avec contrôles (`400`, `401`, `403`, `404`, `409`). Les tests API peuvent être faits
-avec Postman en important [`TP6/postman/TP6_API.postman_collection.json`](TP6/postman/TP6_API.postman_collection.json).
+avec Postman en important [`TP6/postman/TP6_API.postman_collection.json`](TP6/postman/TP6_API.postman_collection.json)
+ou avec le script `./tests/test_api_tp6.sh` (serveur lancé).
 
 Comptes fictifs locaux : `etudiant1@univ.test` / `etudiant123`,
 `responsable@univ.test` / `responsable123`, `admin@univ.test` / `admin123`.
@@ -133,4 +145,5 @@ Les sorties de référence TP3 sont dans `TP3/sorties/` (MariaDB 11.8.6, base vi
 | TP4 | Squelette PHP, contrat d'API, route `/api/sante` et ADR-001 | Fait |
 | TP5 | Organisation du travail avec Git | Intégré aux TPs suivants |
 | TP6 | API des demandes (auth, transitions, transaction, tests HTTP) | Fait |
-| TP7 à TP10 | — | À venir |
+| TP7 | Maquettes alignées et frontend accessible (étudiant / responsable) | Fait |
+| TP8 à TP10 | — | À venir |

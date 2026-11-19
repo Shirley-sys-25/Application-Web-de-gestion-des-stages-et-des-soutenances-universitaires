@@ -6,12 +6,14 @@ namespace App;
 
 use App\Controllers\AuthController;
 use App\Controllers\DemandeController;
+use App\Controllers\EntrepriseController;
 use App\Controllers\SanteController;
 use App\Repositories\DemandeRepository;
 use App\Repositories\EntrepriseRepository;
 use App\Repositories\UtilisateurRepository;
 use App\Services\AuthService;
 use App\Services\DemandeService;
+use App\Services\EntrepriseService;
 use PDO;
 
 /**
@@ -56,6 +58,16 @@ final class Container
                 new EntrepriseRepository($pdo),
                 $pdo
             ),
+            $this->authService()
+        );
+    }
+
+    public function entrepriseController(): EntrepriseController
+    {
+        $pdo = $this->pdo();
+
+        return new EntrepriseController(
+            new EntrepriseService(new EntrepriseRepository($pdo)),
             $this->authService()
         );
     }
