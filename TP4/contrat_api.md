@@ -38,6 +38,7 @@ Aucun détail technique (SQL, nom d'utilisateur, mot de passe, trace PHP) n'est 
 |---|---|---|---|---|
 | `GET` | `/api/sante` | public | `200` | `503` |
 | `GET` | `/api/demandes` | Responsable, Administrateur | `200` | `400`, `401`, `403` |
+| `GET` | `/api/entreprises` | Étudiant | `200` | `401`, `403` |
 | `POST` | `/api/demandes` | Étudiant | `201` | `400`, `401`, `403` |
 | `PATCH` | `/api/demandes/{id}/statut` | Responsable, Administrateur | `200` | `400`, `401`, `403`, `404`, `409` |
 
@@ -215,3 +216,35 @@ Les trois routes métier sont implémentées avec authentification par session, 
 table des transitions et transaction statut + historique. Des routes d'authentification
 (`POST /api/connexion`, `POST /api/deconnexion`, `GET /api/moi`) et une route étudiant
 (`GET /api/demandes/mes-demandes`) ont été ajoutées. Voir [`../TP6/README.md`](../TP6/README.md).
+
+## Mise à jour TP7
+
+### GET /api/entreprises
+
+Liste les entreprises partenaires proposées dans le formulaire de nouvelle demande. Route en
+lecture seule, réservée aux étudiants connectés.
+
+**Succès — `200`**
+
+```json
+[
+  {
+    "id": 1,
+    "nom": "Atelier Numerique",
+    "ville": "Cotonou"
+  },
+  {
+    "id": 2,
+    "nom": "Reseau Plus",
+    "ville": "Porto-Novo"
+  }
+]
+```
+
+**Erreurs**
+
+- `401` : aucune session active.
+- `403` : rôle différent de `ETUDIANT`.
+
+Cette route a été ajoutée au TP7 pour alimenter le sélecteur d'entreprise du frontend. Elle ne
+permet aucune création ni modification : le dépôt reste assuré par `POST /api/demandes`.

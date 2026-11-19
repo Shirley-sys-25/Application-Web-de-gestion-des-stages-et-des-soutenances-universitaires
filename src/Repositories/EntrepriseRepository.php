@@ -24,4 +24,23 @@ final class EntrepriseRepository
 
         return $requete->fetchColumn() !== false;
     }
+
+    /**
+     * @return array<int, array{id: int, nom: string, ville: string}>
+     */
+    public function findAll(): array
+    {
+        $requete = $this->pdo->query(
+            'SELECT id, nom, ville FROM entreprise ORDER BY nom ASC, id ASC'
+        );
+
+        return array_map(
+            static fn (array $ligne): array => [
+                'id' => (int) $ligne['id'],
+                'nom' => (string) $ligne['nom'],
+                'ville' => (string) $ligne['ville'],
+            ],
+            $requete->fetchAll()
+        );
+    }
 }

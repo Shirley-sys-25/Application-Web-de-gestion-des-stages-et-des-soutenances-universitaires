@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Vérifie les six cas HTTP du TP6 avec curl.
+# Vérifie les cas HTTP des TP6 et TP7 avec curl.
 #
 # Prérequis :
 #   1. base rechargée avec TP3/001_schema.sql, TP3/002_seed.sql,
@@ -59,6 +59,20 @@ echo "=== Connexion étudiant ==="
 reponse="$(requete POST /api/connexion '{"email":"etudiant1@univ.test","mot_de_passe":"etudiant123"}' "$COOKIE_ETUDIANT")"
 verifier 'Connexion étudiant' 200 "$reponse"
 
+echo "=== TP7 : GET /api/entreprises ==="
+reponse="$(requete GET /api/entreprises '' "$COOKIE_ETUDIANT")"
+verifier 'GET /api/entreprises en tant qu’étudiant' 200 "$reponse"
+if ! printf '%s' "$reponse" | grep -q '"nom":"Atelier Numerique"'; then
+    echo "[KO] GET /api/entreprises : Atelier Numerique absent" >&2
+    exit 1
+fi
+if ! printf '%s' "$reponse" | grep -q '"nom":"Reseau Plus"'; then
+    echo "[KO] GET /api/entreprises : Reseau Plus absent" >&2
+    exit 1
+fi
+reponse="$(requete GET /api/entreprises)"
+verifier 'GET /api/entreprises sans session' 401 "$reponse"
+
 echo "=== Cas 1 : succès de création ==="
 reponse="$(requete POST /api/demandes '{"entreprise_id":1}' "$COOKIE_ETUDIANT")"
 verifier 'POST /api/demandes (entreprise 1)' 201 "$reponse"
@@ -80,6 +94,9 @@ echo "=== Connexion responsable ==="
 reponse="$(requete POST /api/connexion '{"email":"responsable@univ.test","mot_de_passe":"responsable123"}' "$COOKIE_RESPONSABLE")"
 verifier 'Connexion responsable' 200 "$reponse"
 
+reponse="$(requete GET /api/entreprises '' "$COOKIE_RESPONSABLE")"
+verifier 'GET /api/entreprises en tant que responsable' 403 "$reponse"
+
 echo "=== Cas 5 : 404 demande inexistante ==="
 reponse="$(requete PATCH /api/demandes/999/statut '{"decision":"VALIDEE"}' "$COOKIE_RESPONSABLE")"
 verifier 'PATCH /api/demandes/999/statut' 404 "$reponse"
@@ -92,4 +109,4 @@ echo "=== Cas 6 : 409 validation répétée ==="
 reponse="$(requete PATCH "/api/demandes/$DEMANDE_ID/statut" '{"decision":"VALIDEE"}' "$COOKIE_RESPONSABLE")"
 verifier "PATCH /api/demandes/$DEMANDE_ID/statut (répétition)" 409 "$reponse"
 
-echo 'Tous les cas HTTP du TP6 sont conformes.'
+echo 'Tous les cas HTTP des TP6 et TP7 sont conformes.'
