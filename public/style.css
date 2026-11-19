@@ -124,7 +124,8 @@ button:disabled {
   box-shadow: var(--shadow);
 }
 
-.noscript h1 {
+.noscript h1,
+.noscript h2 {
   margin-top: 0;
 }
 
@@ -235,6 +236,11 @@ button:disabled {
   min-height: 100vh;
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+}
+
+.login-page--denied {
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
 }
 
 .login-brand {
@@ -412,6 +418,10 @@ button:disabled {
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.1);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
+}
+
+.login-card--centered {
+  text-align: center;
 }
 
 .login-card h2 {
@@ -1032,6 +1042,29 @@ button:disabled {
   justify-content: flex-end;
   gap: 10px;
   margin-top: 4px;
+}
+
+.form-actions--center {
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.next-action {
+  margin-top: 8px;
+}
+
+.decision-info {
+  margin-top: 14px;
+}
+
+.decision-date {
+  text-align: right;
+}
+
+.action-empty {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .alert {

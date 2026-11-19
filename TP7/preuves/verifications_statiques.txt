@@ -1,0 +1,22 @@
+node --check public/app.js
+OK
+
+php -l (src + public)
+No syntax errors detected in public/index.php
+No syntax errors detected in src/Container.php
+No syntax errors detected in src/Controllers/AuthController.php
+No syntax errors detected in src/Controllers/DemandeController.php
+No syntax errors detected in src/Controllers/EntrepriseController.php
+No syntax errors detected in src/Controllers/SanteController.php
+No syntax errors detected in src/Database.php
+No syntax errors detected in src/Exceptions/HttpException.php
+No syntax errors detected in src/Http/Json.php
+No syntax errors detected in src/Repositories/DemandeRepository.php
+No syntax errors detected in src/Repositories/EntrepriseRepository.php
+No syntax errors detected in src/Repositories/UtilisateurRepository.php
+No syntax errors detected in src/Services/AuthService.php
+No syntax errors detected in src/Services/DemandeService.php
+No syntax errors detected in src/Services/EntrepriseService.php
+
+bash -n tests/test_api_tp6.sh
+OK

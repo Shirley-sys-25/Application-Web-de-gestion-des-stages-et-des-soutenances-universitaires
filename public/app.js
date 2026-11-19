@@ -585,7 +585,7 @@
     const form = h('form', {
       class: 'login-form',
       id: 'login-form',
-      novalidate: true,
+      novalidate: '',
       on: {
         submit: async (event) => {
           event.preventDefault();
@@ -784,8 +784,8 @@
           h('span', { class: 'brand-kicker', text: 'Portail Stages & Soutenances' }),
         ),
       ),
-      h('nav', { class: 'nav' },
-        h('p', { class: 'nav-label', text: 'Menu principal' }),
+      h('nav', { class: 'nav', attrs: { 'aria-labelledby': 'nav-label' } },
+        h('p', { class: 'nav-label', id: 'nav-label', text: 'Menu principal' }),
         navList,
       ),
       h('div', { class: 'sidebar-footer' },
@@ -882,9 +882,9 @@
 
   function renderAccessDenied() {
     setDocumentTitle('Accès refusé');
-    const page = h('div', { class: 'login-page', style: 'grid-template-columns: minmax(0,1fr); place-items:center;' },
+    const page = h('div', { class: 'login-page login-page--denied' },
       h('section', { class: 'login-panel' },
-        h('div', { class: 'login-card', style: 'text-align:center;' },
+        h('div', { class: 'login-card login-card--centered' },
           h('span', { class: 'icon-box icon-box--red' }, iconEl('lock')),
           h('h2', { text: 'Accès métier indisponible' }),
           h('p', { class: 'muted', text: 'Ce compte n’a pas accès aux espaces étudiant ou responsable du TP7.' }),
@@ -1227,7 +1227,7 @@
     const nodes = [head, recap];
 
     if (motif) {
-      nodes.push(h('section', { class: 'alert alert-error', attrs: { role: 'status' } },
+      nodes.push(h('div', { class: 'alert alert-error', attrs: { role: 'status' } },
         iconEl('alert'),
         h('div', {},
           h('strong', { text: 'Motif du refus' }),
@@ -1241,7 +1241,7 @@
       h('div', {},
         h('h2', { text: next.title }),
         h('p', { text: next.text }),
-        next.action ? h('p', { style: 'margin-top:8px;' }, h('a', { class: 'btn btn-secondary btn-sm', href: next.action.href }, next.action.label)) : null,
+        next.action ? h('p', { class: 'next-action' }, h('a', { class: 'btn btn-secondary btn-sm', href: next.action.href }, next.action.label)) : null,
       ),
     ));
 
@@ -1375,7 +1375,7 @@
     const form = h('form', {
       class: 'stack-sm',
       id: 'new-demande-form',
-      novalidate: true,
+      novalidate: '',
       on: {
         submit: async (event) => {
           event.preventDefault();
@@ -1739,7 +1739,10 @@
 
     const action = demande.statut === 'SOUMISE'
       ? h('a', { class: 'btn btn-primary btn-sm', href: `#/responsable/demandes/${demande.id}/decision` }, iconEl('check'), 'Traiter', iconEl('arrowRight', 'icon icon-sm'))
-      : h('span', { class: 'muted', attrs: { 'aria-label': 'Aucune action disponible' }, text: '—' });
+      : h('span', { class: 'action-empty' },
+          h('span', { class: 'sr-only', text: 'Aucune action disponible' }),
+          h('span', { class: 'muted', attrs: { 'aria-hidden': 'true' }, text: '—' }),
+        );
 
     return h('tr', { dataset: { status: demande.statut, search } },
       h('td', {},
@@ -1866,7 +1869,7 @@
     const form = h('form', {
       class: 'decision-card glass-card',
       id: 'decision-form',
-      novalidate: true,
+      novalidate: '',
       on: {
         submit: async (event) => {
           event.preventDefault();
@@ -1977,7 +1980,7 @@
             h('p', { text: `${student.numero_etudiant || '—'} • Demande #${demande.id}` }),
           ),
         ),
-        h('div', { class: 'cell-stack', style: 'text-align:right;' },
+        h('div', { class: 'cell-stack decision-date' },
           h('span', { class: 'muted small', text: 'Date de dépôt' }),
           h('strong', { text: formatDateShort(demande.date_depot) }),
         ),
@@ -1994,7 +1997,7 @@
           h('span', { class: 'meta-sub', text: 'Ville de stage' }),
         ),
       ),
-      h('div', { class: 'alert alert-info', style: 'margin-top:14px;' },
+      h('div', { class: 'alert alert-info decision-info' },
         iconEl('info'),
         h('div', {},
           h('strong', { text: 'Statut : Soumise' }),
@@ -2062,7 +2065,7 @@
           : 'La demande de stage a été officiellement validée pour l’année universitaire 2026-2027.',
       }),
       summary,
-      h('div', { class: 'form-actions', style: 'justify-content:center;margin-top:20px;' },
+      h('div', { class: 'form-actions form-actions--center' },
         h('a', { class: 'btn btn-primary', href: '#/responsable/demandes' }, iconEl('arrowLeft'), 'Retour aux demandes à traiter'),
       ),
     );
@@ -2085,7 +2088,7 @@
      ===================================================================== */
 
   function kpiCard({ variant, icon, label, value, sub, foot }) {
-    return h('article', { class: `kpi-card kpi-card--${variant}` },
+    return h('div', { class: `kpi-card kpi-card--${variant}` },
       h('div', { class: 'kpi-top' },
         h('span', { class: 'kpi-label', text: label }),
         h('span', { class: 'icon-box' }, iconEl(icon)),
