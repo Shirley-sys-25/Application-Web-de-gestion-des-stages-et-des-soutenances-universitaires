@@ -454,6 +454,8 @@
   async function route() {
     const token = ++state.routeToken;
     const path = currentPath();
+    // Chaque changement de route repart du haut de la page.
+    window.scrollTo(0, 0);
 
     if (!state.user) {
       if (path !== '/connexion') {
@@ -665,7 +667,7 @@
           emailInput.value = 'etudiant1@univ.test';
           passwordInput.value = 'etudiant123';
           hideInlineAlert(errorBox);
-          passwordInput.focus();
+          passwordInput.focus({ preventScroll: true });
         },
       },
     },
@@ -683,7 +685,7 @@
           emailInput.value = 'responsable@univ.test';
           passwordInput.value = 'responsable123';
           hideInlineAlert(errorBox);
-          passwordInput.focus();
+          passwordInput.focus({ preventScroll: true });
         },
       },
     },
