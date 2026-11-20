@@ -1,7 +1,8 @@
 # Projet informatique 2 — Gestion des stages et des soutenances
 
 Application web de gestion des stages universitaires : dépôt des dossiers par les étudiants,
-validation ou refus motivé, affectation d'un encadreur, programmation des soutenances.
+validation ou refus motivé et consultation de l'état des demandes. Le socle TP1-TP8 est
+fonctionnel et testé ; l'affectation d'un encadreur et l'écran de soutenance restent à faire.
 
 | | |
 |---|---|
@@ -9,6 +10,10 @@ validation ou refus motivé, affectation d'un encadreur, programmation des soute
 | **Groupe** | ANAGO Shirley, DAGNON Christie, KARIMOU NARO Sabalimath (groupe de 3) |
 | **Dépôt** | <https://github.com/Shirley-sys-25/Application-Web-de-gestion-des-stages-et-des-soutenances-universitaires> |
 | **Environnement** | PHP 8, MySQL ou MariaDB, Git, PlantUML — données fictives uniquement |
+
+> **Pour tester sur un autre poste :** suivre le guide
+> [`GUIDE_PROFESSEUR.md`](GUIDE_PROFESSEUR.md) (installation Windows/Linux, création de la
+> base, comptes fictifs, scénario de démonstration et dépannage).
 
 ## Organisation du dépôt
 
@@ -21,6 +26,7 @@ validation ou refus motivé, affectation d'un encadreur, programmation des soute
 | `TP6/` | Scripts SQL (`utilisateur`, `historique_demande`), collection Postman et preuves de tests |
 | `TP7/` | Maquettes des 7 écrans et aperçu |
 | `TP8/` | Matrice de tests, preuves de sécurité et fiche de revue de code |
+| `GUIDE_PROFESSEUR.md` | Installation sur un autre poste et scénario de test |
 | `public/` | Point d'entrée HTTP (`index.php`, `index.html`) et frontend (HTML/CSS/JS) |
 | `src/` | Contrôleurs, services, dépôts, exceptions HTTP et connexion PDO |
 | `config/` | Chargement de la configuration depuis `.env` |
@@ -33,7 +39,7 @@ validation ou refus motivé, affectation d'un encadreur, programmation des soute
 
 | Branche | Contenu |
 |---|---|
-| `main` | Squelette du dépôt : `README.md`, `.gitignore`, `.gitattributes` |
+| `main` | Version courante exécutable : TP1 à TP8, guide d'installation inclus |
 | `tp1` | Fiche de cadrage du projet |
 | `tp2` | Exigences fonctionnelles et non fonctionnelles, matrice de traçabilité |
 | `tp3` | Modèle UML, scripts SQL, jeu d'essai vérifié et rapport |
@@ -44,9 +50,13 @@ validation ou refus motivé, affectation d'un encadreur, programmation des soute
 
 ## Périmètre retenu (v1)
 
-**Inclus** : authentification et rôles, dépôt d'une demande de stage, validation ou refus motivé,
-affectation d'un encadreur, consultation de l'état des demandes, programmation des soutenances,
-journal des décisions.
+**Implémenté dans le socle TP1-TP8** : authentification et rôles, dépôt d'une demande de stage,
+validation ou refus motivé, consultation de l'état des demandes, journal des décisions,
+protection CSRF et API minimale de programmation d'une soutenance.
+
+**Reste à faire** : affectation d'un encadreur (EF-04), gestion des comptes et des rôles (EF-10),
+écran de programmation de soutenance, HTTPS, limitation des tentatives de connexion,
+sauvegarde/restauration, puis TP9 et TP10.
 
 **Exclus** (reportés en v2) : paiement en ligne, notifications SMS, portail entreprise,
 convention signée électroniquement, messagerie interne.
@@ -55,10 +65,14 @@ convention signée électroniquement, messagerie interne.
 
 Prérequis : PHP 8.1 ou plus, extension `pdo_mysql`, MySQL ou MariaDB.
 
+> Procédure complète pour Windows, Linux et macOS, avec création de la base et de
+> l'utilisateur SQL : [`GUIDE_PROFESSEUR.md`](GUIDE_PROFESSEUR.md).
+
 ```bash
 cp .env.example .env
 # Modifier DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS (ou DB_SOCKET) dans .env
 
+# La base `stages` et l'utilisateur SQL doivent déjà exister.
 # Base de données
 mariadb -u stages -p stages < TP3/001_schema.sql
 mariadb -u stages -p stages < TP3/002_seed.sql
@@ -80,6 +94,9 @@ BASE_URL=http://127.0.0.1:8000 ./tests/test_api_tp6.sh
 BASE_URL=http://127.0.0.1:8000 ./tests/test_api_tp8.sh
 ```
 
+Les scripts HTTP créent des données supplémentaires. Pour revenir au jeu d'essai,
+suivre la procédure de remise à zéro du [`GUIDE_PROFESSEUR.md`](GUIDE_PROFESSEUR.md#5-importer-les-scripts-sql).
+
 Le frontend TP7 est servi par la même commande : ouvrir `http://127.0.0.1:8000/`.
 Il propose le parcours étudiant (connexion, mes demandes, nouvelle demande, détail) et le parcours
 responsable (demandes à traiter, décision, confirmation). Le sélecteur d'entreprise utilise
@@ -97,7 +114,10 @@ important [`TP6/postman/TP6_API.postman_collection.json`](TP6/postman/TP6_API.po
 ou avec les scripts `./tests/test_api_tp6.sh` et `./tests/test_api_tp8.sh` (serveur lancé).
 
 Comptes fictifs locaux : `etudiant1@univ.test` / `etudiant123`,
-`responsable@univ.test` / `responsable123`, `admin@univ.test` / `admin123`.
+`etudiant2@univ.test` / `etudiant123`, `etudiant3@univ.test` / `etudiant123`,
+`responsable@univ.test` / `responsable123`, `admin@univ.test` / `admin123`,
+`developpeur@univ.test` / `developpeur123`. Le scénario de test du guide utilise
+`etudiant1`, `etudiant2` et `responsable`.
 
 - Documentation TP6 : [`TP6/README.md`](TP6/README.md)
 - Preuves des tests TP6 : [`TP6/preuves_tests.md`](TP6/preuves_tests.md)
