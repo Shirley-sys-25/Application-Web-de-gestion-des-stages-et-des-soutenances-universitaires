@@ -70,7 +70,7 @@ est décrite dans le `README.md` à la racine du dépôt.
 | Mes demandes (étudiant) | `GET /api/demandes/mes-demandes` |
 | Nouvelle demande — entreprises | `GET /api/entreprises` |
 | Nouvelle demande — envoi | `POST /api/demandes` |
-| Détail étudiant | `GET /api/demandes/mes-demandes` puis filtrage par identifiant |
+| Détail étudiant | `GET /api/demandes/{id}` (route ajoutée au TP8 ; le TP7 filtrait la liste) |
 | Demandes à traiter (responsable) | `GET /api/demandes` |
 | Décision | `PATCH /api/demandes/{id}/statut` |
 

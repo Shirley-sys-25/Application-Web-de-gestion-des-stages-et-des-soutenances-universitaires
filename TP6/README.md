@@ -79,8 +79,8 @@ Ces comptes sont strictement fictifs et destinés au serveur local.
 | Méthode | Chemin | Rôle autorisé | Succès | Erreurs |
 |---|---|---|---|---|
 | `GET` | `/api/sante` | public | `200` | `503` |
-| `POST` | `/api/connexion` | public | `200` | `400`, `401` |
-| `POST` | `/api/deconnexion` | session | `200` | — |
+| `POST` | `/api/connexion` | public | `200` | `400`, `401`, `403` |
+| `POST` | `/api/deconnexion` | session | `200` | `403` |
 | `GET` | `/api/moi` | session | `200` | `401` |
 | `GET` | `/api/demandes` | Responsable, Administrateur | `200` | `400`, `401`, `403` |
 | `GET` | `/api/demandes/mes-demandes` | Étudiant | `200` | `401`, `403` |
@@ -88,6 +88,9 @@ Ces comptes sont strictement fictifs et destinés au serveur local.
 | `PATCH` | `/api/demandes/{id}/statut` | Responsable, Administrateur | `200` | `400`, `401`, `403`, `404`, `409` |
 
 `GET /api/demandes` accepte les paramètres optionnels `statut` et `q`.
+
+Depuis le TP8, les écritures exigent aussi un jeton CSRF. Voir
+[`../TP8/README.md`](../TP8/README.md) et le contrat [`../TP4/contrat_api.md`](../TP4/contrat_api.md).
 
 ## Authentification
 
@@ -126,12 +129,30 @@ curl -b cookies.txt http://127.0.0.1:8000/api/demandes/mes-demandes
 Le message d'échec est identique pour un compte inconnu et un mot de passe faux :
 `{"erreur":"Identifiants invalides."}` avec le code `401`.
 
+## Jeton CSRF (ajout TP8)
+
+Le cookie de session ne suffit plus pour une écriture, y compris la connexion : le client doit
+obtenir un jeton avec `GET /api/csrf`, puis le renvoyer dans `X-CSRF-Token`.
+
+```bash
+curl -b cookies.txt -c cookies.txt http://127.0.0.1:8000/api/csrf
+# {"csrf_token":"..."}
+```
+
+Sans jeton ou avec un jeton invalide, une écriture renvoie
+`403 {"erreur":"Jeton CSRF invalide ou absent."}`.
+
 ## Exemple de validation
 
 ```bash
+CSRF="$(curl -sS -b cookies-responsable.txt -c cookies-responsable.txt \
+  http://127.0.0.1:8000/api/csrf \
+  | php -r '$d=json_decode(stream_get_contents(STDIN), true); echo $d["csrf_token"] ?? "";')"
+
 curl -b cookies-responsable.txt \
   -X PATCH \
   -H 'Content-Type: application/json' \
+  -H "X-CSRF-Token: $CSRF" \
   -d '{"decision":"VALIDEE"}' \
   http://127.0.0.1:8000/api/demandes/2/statut
 ```
@@ -159,6 +180,8 @@ Règles :
 2. Vérifier la variable `base_url` : `http://127.0.0.1:8000`.
 3. Lancer d'abord le dossier **Scénario étudiant**, puis **Scénario responsable**.
 4. Postman conserve automatiquement le cookie de session entre les requêtes.
+5. Les requêtes **Obtenir jeton CSRF** renseignent la variable `csrf_token` ; les écritures
+   l'envoient automatiquement dans `X-CSRF-Token`.
 
 La variable `demande_id` est renseignée par la requête **Créer une demande**. Si vous lancez
 uniquement le scénario responsable, la valeur par défaut `2` est utilisée ; la demande 2 doit

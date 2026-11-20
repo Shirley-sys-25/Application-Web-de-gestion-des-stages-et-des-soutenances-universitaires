@@ -8,12 +8,15 @@ use App\Controllers\AuthController;
 use App\Controllers\DemandeController;
 use App\Controllers\EntrepriseController;
 use App\Controllers\SanteController;
+use App\Controllers\SoutenanceController;
 use App\Repositories\DemandeRepository;
 use App\Repositories\EntrepriseRepository;
+use App\Repositories\SoutenanceRepository;
 use App\Repositories\UtilisateurRepository;
 use App\Services\AuthService;
 use App\Services\DemandeService;
 use App\Services\EntrepriseService;
+use App\Services\SoutenanceService;
 use PDO;
 
 /**
@@ -56,6 +59,20 @@ final class Container
             new DemandeService(
                 new DemandeRepository($pdo),
                 new EntrepriseRepository($pdo),
+                $pdo
+            ),
+            $this->authService()
+        );
+    }
+
+    public function soutenanceController(): SoutenanceController
+    {
+        $pdo = $this->pdo();
+
+        return new SoutenanceController(
+            new SoutenanceService(
+                new DemandeRepository($pdo),
+                new SoutenanceRepository($pdo),
                 $pdo
             ),
             $this->authService()

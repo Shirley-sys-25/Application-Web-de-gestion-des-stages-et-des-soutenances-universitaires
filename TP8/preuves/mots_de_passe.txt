@@ -1,0 +1,17 @@
+$ mariadb ... "SELECT email, LEFT(mot_de_passe_hash, 7) AS prefixe, CHAR_LENGTH(mot_de_passe_hash) AS longueur FROM utilisateur ORDER BY id;"
+email	prefixe	longueur
+etudiant1@univ.test	$2y$12$	60
+etudiant2@univ.test	$2y$12$	60
+etudiant3@univ.test	$2y$12$	60
+responsable@univ.test	$2y$12$	60
+admin@univ.test	$2y$12$	60
+developpeur@univ.test	$2y$12$	60
+
+$ php -r "vérification password_verify() et absence de mot de passe en clair"
+etudiant1@univ.test      algo=bcrypt verifie=oui prefixe=$2y$
+etudiant2@univ.test      algo=bcrypt verifie=oui prefixe=$2y$
+etudiant3@univ.test      algo=bcrypt verifie=oui prefixe=$2y$
+responsable@univ.test    algo=bcrypt verifie=oui prefixe=$2y$
+admin@univ.test          algo=bcrypt verifie=oui prefixe=$2y$
+developpeur@univ.test    algo=bcrypt verifie=oui prefixe=$2y$
+Mots de passe stockés en clair : 0

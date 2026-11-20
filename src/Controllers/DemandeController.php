@@ -74,6 +74,41 @@ final class DemandeController
     }
 
     /**
+     * GET /api/demandes/{id}
+     * Un étudiant ne peut lire que son propre dossier ; le responsable et
+     * l'administrateur peuvent lire tous les dossiers.
+     *
+     * @return array{status: int, body: array<string, mixed>}
+     */
+    public function detail(int $id): array
+    {
+        $utilisateur = $this->auth->exigerRole([
+            'ETUDIANT',
+            'RESPONSABLE',
+            'ADMINISTRATEUR',
+        ]);
+
+        $demande = $this->service->trouver($id);
+
+        if ($demande === null) {
+            throw new HttpException(404, 'Demande introuvable.');
+        }
+
+        if (
+            $utilisateur['role'] === 'ETUDIANT'
+            && (int) $demande['etudiant']['id'] !== (int) ($utilisateur['etudiant_id'] ?? 0)
+        ) {
+            // 403 sans aucune donnée du dossier : le contrôle est côté serveur.
+            throw new HttpException(403, 'Accès interdit à ce dossier.');
+        }
+
+        return [
+            'status' => 200,
+            'body' => $demande,
+        ];
+    }
+
+    /**
      * POST /api/demandes
      * Réservé à l'étudiant connecté.
      *
