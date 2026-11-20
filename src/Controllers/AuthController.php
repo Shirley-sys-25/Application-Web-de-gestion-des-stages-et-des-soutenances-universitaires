@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 use App\Exceptions\HttpException;
 use App\Http\Json;
+use App\Security\Csrf;
 use App\Services\AuthService;
 
 /**
@@ -14,6 +15,7 @@ use App\Services\AuthService;
  * POST /api/connexion   : ouvre une session (cookie HttpOnly).
  * POST /api/deconnexion : détruit la session.
  * GET  /api/moi         : renvoie l'utilisateur connecté.
+ * GET  /api/csrf        : renvoie le jeton CSRF de la session.
  */
 final class AuthController
 {
@@ -82,6 +84,25 @@ final class AuthController
             'status' => 200,
             'body' => [
                 'utilisateur' => $utilisateur,
+            ],
+        ];
+    }
+
+    /**
+     * GET /api/csrf
+     * Fournit le jeton synchronisé de la session courante.
+     *
+     * Route publique : le jeton n'est pas un secret d'authentification,
+     * il est inutilisable par un site tiers qui ne peut pas le lire.
+     *
+     * @return array{status: int, body: array<string, string>}
+     */
+    public function csrf(): array
+    {
+        return [
+            'status' => 200,
+            'body' => [
+                'csrf_token' => Csrf::jeton(),
             ],
         ];
     }

@@ -1,0 +1,139 @@
+# TP8 — sortie de tests
+# Commande : BASE_URL=http://127.0.0.1:8010 ./tests/test_api_tp8.sh
+# Date : 19/11/2026
+# Base : jeu d'essai TP3 + TP6 rechargé avant l'exécution
+
+================================================================
+ TP8 — cas limites, autorisations, injection et CSRF
+================================================================
+
+=== Jetons CSRF et connexions ===
+[OK] Connexion sans jeton CSRF -> HTTP 403
+{"erreur":"Jeton CSRF invalide ou absent."}
+
+
+[OK] La connexion exige le jeton : contient CSRF
+[OK] GET /api/csrf sans session -> HTTP 200
+{"csrf_token":"113651ed749717b0634ce9b707d2d20e52921d09024801596117941f81efa69f"}
+
+
+[OK] Connexion étudiant A -> HTTP 200
+{"utilisateur":{"id":1,"email":"etudiant1@univ.test","role":"ETUDIANT","etudiant_id":1,"nom":"ADJOVI","prenom":"Koffi"}}
+
+
+[OK] Connexion étudiant B -> HTTP 200
+{"utilisateur":{"id":2,"email":"etudiant2@univ.test","role":"ETUDIANT","etudiant_id":2,"nom":"BELLO","prenom":"Aicha"}}
+
+
+[OK] Connexion responsable -> HTTP 200
+{"utilisateur":{"id":4,"email":"responsable@univ.test","role":"RESPONSABLE","etudiant_id":null,"nom":null,"prenom":null}}
+
+
+=== T-05 / ENF-01 : autorisation de lecture d'un dossier ===
+[OK] Étudiant A lit son dossier 4 -> HTTP 200
+{"id":4,"etudiant":{"id":1,"numero_etudiant":"ETU-2026-001","nom":"ADJOVI","prenom":"Koffi"},"entreprise":{"id":2,"nom":"Reseau Plus","ville":"Porto-Novo"},"encadreur":null,"statut":"REFUSEE","motif_refus":"Dossier incomplet : convention non signee.","date_depot":"2026-11-13 08:20:00","date_decision":"2026-11-15 11:10:00"}
+
+
+[OK] Dossier 4 du propriétaire : contient "nom":"ADJOVI"
+[OK] Étudiant B lit le dossier 4 de A -> HTTP 403
+{"erreur":"Accès interdit à ce dossier."}
+
+
+[OK] Réponse 403 sans donnée de A : ne contient pas ADJOVI
+[OK] Réponse 403 sans objet étudiant : ne contient pas "etudiant"
+[OK] Étudiant B lit son propre dossier 2 -> HTTP 200
+{"id":2,"etudiant":{"id":2,"numero_etudiant":"ETU-2026-002","nom":"BELLO","prenom":"Aicha"},"entreprise":{"id":1,"nom":"Atelier Numerique","ville":"Cotonou"},"encadreur":null,"statut":"SOUMISE","motif_refus":null,"date_depot":"2026-11-11 14:00:00","date_decision":null}
+
+
+[OK] Dossier 2 du propriétaire : contient "nom":"BELLO"
+=== T-06 : injection SQL dans un identifiant et une recherche ===
+[OK] GET /api/demandes/1 OR 1=1 -> HTTP 404
+{"erreur":"Route introuvable."}
+
+
+[OK] PATCH /api/demandes/1 OR 1=1/statut -> HTTP 404
+{"erreur":"Route introuvable."}
+
+
+[OK] Recherche q=1 OR 1=1 -> HTTP 200
+[]
+
+
+[OK] La recherche ne retourne aucune ligne : liste vide
+=== T-07 / CSRF : écriture authentifiée ===
+[OK] POST /api/demandes sans jeton CSRF -> HTTP 403
+{"erreur":"Jeton CSRF invalide ou absent."}
+
+
+[OK] Message CSRF absent : contient CSRF
+[OK] POST /api/demandes avec jeton invalide -> HTTP 403
+{"erreur":"Jeton CSRF invalide ou absent."}
+
+
+[OK] POST /api/demandes avec jeton valide -> HTTP 201
+{"id":5,"statut":"SOUMISE","date_depot":"2026-11-19 16:58:56"}
+
+
+=== T-01 : demande inexistante ===
+[OK] PATCH /api/demandes/999/statut -> HTTP 404
+{"erreur":"Demande introuvable."}
+
+
+=== T-02 : refus sans motif ===
+[OK] PATCH /api/demandes/2/statut sans motif -> HTTP 400
+{"erreur":"Le motif est obligatoire pour un refus."}
+
+
+[OK] Message motif obligatoire : contient motif
+[OK] La demande 2 est restée SOUMISE : contient "statut":"SOUMISE"
+=== T-03 : validation répétée ===
+[OK] PATCH /api/demandes/3/statut (déjà validée) -> HTTP 409
+{"erreur":"Transition de statut interdite."}
+
+
+[OK] La demande 3 est restée VALIDEE : contient "statut":"VALIDEE"
+=== Identifiant négatif ===
+[OK] PATCH /api/demandes/-1/statut -> HTTP 404
+{"erreur":"Route introuvable."}
+
+
+=== T-04 : date de soutenance invalide ===
+[OK] POST /api/soutenances avec le 30 février -> HTTP 400
+{"erreur":"Date de soutenance invalide."}
+
+
+[OK] Message date invalide : contient Date de soutenance invalide
+=== EF-05 : date valide et doublon de demande ===
+[OK] Validation de la demande 5 -> HTTP 200
+{"id":5,"statut":"VALIDEE","motif_refus":null,"date_decision":"2026-11-19 16:58:56"}
+
+
+[OK] Programmation avec date valide -> HTTP 201
+{"id":2,"demande_id":5,"date_heure":"2027-04-10 09:30:00","salle":"Z179510393724981","duree_minutes":45}
+
+
+[OK] Soutenance créée pour la demande : contient "demande_id":5
+[OK] Seconde soutenance pour la même demande -> HTTP 409
+{"erreur":"Cette demande a déjà une soutenance."}
+
+
+=== Autorisations par rôle ===
+[OK] Étudiant sur la liste responsable -> HTTP 403
+{"erreur":"Accès interdit."}
+
+
+[OK] Responsable sur la liste des entreprises -> HTTP 403
+{"erreur":"Accès interdit."}
+
+
+[OK] Étudiant sur la programmation de soutenance -> HTTP 403
+{"erreur":"Accès interdit."}
+
+
+=== Sans session ===
+[OK] POST /api/demandes sans session -> HTTP 401
+{"erreur":"Authentification requise."}
+
+
+
+Tous les contrôles TP8 sont conformes.

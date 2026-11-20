@@ -97,7 +97,8 @@ de démonstration `#5` au statut `SOUMISE` pour `etudiant1` et `Reseau Plus`.
 - Action : se déconnecter, se reconnecter avec le compte étudiant, ouvrir
   « Mes demandes », puis le détail de la demande `#6`.
 - Attendu : `GET /api/demandes/mes-demandes` répond `200` ; la demande `#6`
-  apparaît au statut « Validée » ; le détail affiche la date de décision.
+  apparaît au statut « Validée » ; le détail (`GET /api/demandes/6` depuis le TP8)
+  affiche la date de décision.
 - Observé : statut « Validée » et date de décision visibles.
 - Captures :
   - [`preuves/captures/08-etudiant-liste-validee.png`](preuves/captures/08-etudiant-liste-validee.png)
@@ -150,6 +151,7 @@ de démonstration `#5` au statut `SOUMISE` pour `etudiant1` et `Reseau Plus`.
 | `GET /api/entreprises` étudiant | `200` | `200` |
 | `POST /api/demandes` | `201` | `201` |
 | `GET /api/demandes/mes-demandes` | `200` | `200` |
+| `GET /api/demandes/{id}` (détail, TP8) | `200` | `200` |
 | `GET /api/demandes` responsable | `200` | `200` |
 | `PATCH /api/demandes/6/statut` validation | `200` | `200` |
 | `PATCH /api/demandes/7/statut` refus | `200` | `200` |

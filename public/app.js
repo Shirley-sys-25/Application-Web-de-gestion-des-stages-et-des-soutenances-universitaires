@@ -32,6 +32,7 @@
     lastDecision: null,
     routeToken: 0,
     toastTimer: null,
+    csrfToken: null,
   };
 
   const app = document.getElementById('app');
@@ -345,8 +346,40 @@
     }
   }
 
+  async function fetchCsrfToken() {
+    let response;
+    try {
+      response = await fetch('/api/csrf', {
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' },
+      });
+    } catch (_) {
+      throw new ApiError('Impossible de sécuriser la session. Vérifiez votre connexion puis réessayez.', 0, null);
+    }
+
+    const raw = await response.text();
+    let data = null;
+    if (raw) {
+      try {
+        data = JSON.parse(raw);
+      } catch (_) {
+        data = null;
+      }
+    }
+
+    if (!response.ok || !data || typeof data.csrf_token !== 'string' || !data.csrf_token) {
+      const message = data && typeof data.erreur === 'string'
+        ? data.erreur
+        : 'Jeton CSRF indisponible.';
+      throw new ApiError(message, response.status, data);
+    }
+
+    state.csrfToken = data.csrf_token;
+    return state.csrfToken;
+  }
+
   async function api(path, options = {}) {
-    const method = options.method || 'GET';
+    const method = (options.method || 'GET').toUpperCase();
     const headers = {
       Accept: 'application/json',
       ...(options.headers || {}),
@@ -360,6 +393,11 @@
     if (options.body !== undefined) {
       headers['Content-Type'] = 'application/json';
       fetchOptions.body = JSON.stringify(options.body);
+    }
+
+    // Toutes les écritures, connexion comprise, exigent le jeton.
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+      headers['X-CSRF-Token'] = state.csrfToken || await fetchCsrfToken();
     }
 
     let response;
@@ -383,6 +421,13 @@
       const message = data && typeof data.erreur === 'string'
         ? data.erreur
         : `Erreur HTTP ${response.status}.`;
+
+      // Un jeton devenu obsolète est renouvelé une seule fois.
+      if (response.status === 403 && message.includes('CSRF') && !options.csrfRetry) {
+        state.csrfToken = null;
+        return api(path, { ...options, csrfRetry: true });
+      }
+
       throw new ApiError(message, response.status, data);
     }
 
@@ -398,6 +443,7 @@
   function handleSessionExpired() {
     state.user = null;
     state.lastDecision = null;
+    state.csrfToken = null;
     if (currentPath() !== '/connexion') {
       navigate('/connexion');
     }
@@ -878,6 +924,7 @@
     }
     state.user = null;
     state.lastDecision = null;
+    state.csrfToken = null;
     navigate('/connexion');
     showToast('Vous êtes déconnecté.', 'success');
   }
@@ -1170,14 +1217,8 @@
     setDocumentTitle(`Demande #${id}`);
 
     try {
-      const demandes = await api('/api/demandes/mes-demandes');
+      const demande = await api(`/api/demandes/${encodeURIComponent(id)}`);
       if (token !== state.routeToken) return;
-
-      const demande = demandes.find((item) => Number(item.id) === Number(id));
-      if (!demande) {
-        content.replaceChildren(errorCard('Cette demande est introuvable ou ne vous appartient pas.', () => navigate('/etudiant/demandes')));
-        return;
-      }
 
       content.replaceChildren(...buildStudentDetailContent(demande));
     } catch (error) {

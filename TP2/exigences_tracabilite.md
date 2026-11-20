@@ -75,19 +75,19 @@ En tant que responsable, je veux valider ou refuser une demande complète afin q
 
 | Exigence | Composant | Test | Statut |
 |---|---|---|---|
-| EF-01 | AuthController, AuthService::connecter | T-01 identifiants valides → 200, session ouverte. T-02 mot de passe faux → 401, même message qu'un compte inconnu. | à faire |
-| EF-02 | DemandeController::creer, DemandeService::soumettre | T-03 formulaire complet → 201, statut SOUMISE. T-04 champ obligatoire vide → 400, aucune ligne créée. | à faire |
-| EF-03 | DemandeService::valider, DemandeService::refuser | T-05 SOUMISE → VALIDEE, historique ajouté. T-06 refus sans motif → 400. T-07 refus d'une demande VALIDEE → 409, statut inchangé. | à faire |
+| EF-01 | AuthController, AuthService::connecter | T-01 identifiants valides → 200, session ouverte. T-02 mot de passe faux → 401, même message qu'un compte inconnu. | fait (TP6 ; mots de passe TP8 T-11) |
+| EF-02 | DemandeController::creer, DemandeService::soumettre | T-03 formulaire complet → 201, statut SOUMISE. T-04 champ obligatoire vide → 400, aucune ligne créée. | fait (TP6 ; CSRF TP8 T-10) |
+| EF-03 | DemandeService::valider, DemandeService::refuser | T-05 SOUMISE → VALIDEE, historique ajouté. T-06 refus sans motif → 400. T-07 refus d'une demande VALIDEE → 409, statut inchangé. | fait (TP6 ; TP8 T-02, T-03) |
 | EF-04 | DemandeService::affecterEncadreur | T-08 affectation sur une demande VALIDEE → 200. T-09 affectation sur une demande non validée → 409. | à faire |
-| EF-05 | SoutenanceService::programmer | T-10 date valide → 201. T-11 date 2026-02-30 → 400. T-12 seconde soutenance pour la même demande → refusée (409). | à faire |
-| EF-06 | DemandeController::mesDemandes | T-13 l'étudiant connecté ne voit que ses propres demandes. | à faire si temps |
+| EF-05 | SoutenanceService::programmer | T-10 date valide → 201. T-11 date 2026-02-30 → 400. T-12 seconde soutenance pour la même demande → refusée (409). | fait (TP8 T-04, T-15, T-16 ; API sans écran) |
+| EF-06 | DemandeController::mesDemandes | T-13 l'étudiant connecté ne voit que ses propres demandes. | fait (TP7 ; TP8 T-18) |
 | EF-07 | DemandeRepository::rechercher | T-14 recherche par statut VALIDEE → uniquement des demandes VALIDEE. | à faire si temps |
 | EF-08 | DemandeService::historique | T-15 l'historique d'une demande validée contient la décision. | reporté |
 | EF-10 | UtilisateurService (création, désactivation, rôle) | T-22 compte désactivé → connexion refusée ; rôle modifié → droits mis à jour. | à faire |
 | EF-11 | AuthService / UtilisateurService (profil) | T-23 l'étudiant modifie son propre profil → 200 ; T-24 il tente de modifier le profil d'un autre → 403. | à faire si temps |
 | EF-12 | Journalisation, script de déploiement | T-25 déploiement sur environnement de test → version active et journal conservé. | reporté |
-| ENF-01 | DemandeService (contrôle de propriété) | T-16 l'étudiant B lit la demande de l'étudiant A → 403 sans donnée. | à faire |
-| ENF-02 | Services (validation serveur) | T-17 requête directe avec une donnée invalide → 400. | à faire |
+| ENF-01 | DemandeService (contrôle de propriété) | T-16 l'étudiant B lit la demande de l'étudiant A → 403 sans donnée. | fait (TP8 T-05, T-18) |
+| ENF-02 | Services (validation serveur) | T-17 requête directe avec une donnée invalide → 400. | fait (TP8 T-01, T-02, T-04, T-07, T-17) |
 | ENF-03 | Procédure mysqldump / restauration | T-18 export, suppression d'une table de test, restauration : COUNT(*) identiques. | à faire |
 | ENF-04 | Configuration du serveur Web | T-19 requête en http:// → refusée ou redirigée vers https://. | à faire si temps |
 | ENF-05 | AuthService::connecter | T-20 six tentatives consécutives dont cinq échecs → la sixième est refusée pendant 15 minutes. | à faire si temps |

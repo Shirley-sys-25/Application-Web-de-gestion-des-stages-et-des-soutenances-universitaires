@@ -44,6 +44,9 @@ Toutes les transitions sont conformes.
 | 404 | `PATCH /api/demandes/999/statut` (responsable) | 404 | `{"erreur":"Demande introuvable."}` |
 | 409 | `PATCH /api/demandes/{id}/statut` deux fois (`VALIDEE`) | 409 | `{"erreur":"Transition de statut interdite."}` |
 
+Le script récupère d'abord le jeton CSRF de chaque session, puis l'envoie dans
+`X-CSRF-Token` pour les écritures, connexion comprise (ajout TP8).
+
 Sortie du script :
 
 ```text
@@ -51,39 +54,61 @@ Sortie du script :
 [OK] Connexion étudiant -> HTTP 200
 {"utilisateur":{"id":1,"email":"etudiant1@univ.test","role":"ETUDIANT","etudiant_id":1,"nom":"ADJOVI","prenom":"Koffi"}}
 
+
+=== TP7 : GET /api/entreprises ===
+[OK] GET /api/entreprises en tant qu’étudiant -> HTTP 200
+[{"id":1,"nom":"Atelier Numerique","ville":"Cotonou"},{"id":2,"nom":"Reseau Plus","ville":"Porto-Novo"}]
+
+
+[OK] GET /api/entreprises sans session -> HTTP 401
+{"erreur":"Authentification requise."}
+
+
 === Cas 1 : succès de création ===
 [OK] POST /api/demandes (entreprise 1) -> HTTP 201
-{"id":5,"statut":"SOUMISE","date_depot":"2026-11-18 16:28:04"}
+{"id":5,"statut":"SOUMISE","date_depot":"2026-11-19 16:59:17"}
+
 
 === Cas 2 : 400 entreprise inexistante ===
 [OK] POST /api/demandes (entreprise 999) -> HTTP 400
 {"erreur":"Entreprise inexistante."}
 
+
 === Cas 3 : 401 sans session ===
 [OK] POST /api/demandes sans cookie -> HTTP 401
 {"erreur":"Authentification requise."}
+
 
 === Cas 4 : 403 étudiant sur la liste responsable ===
 [OK] GET /api/demandes en tant qu’étudiant -> HTTP 403
 {"erreur":"Accès interdit."}
 
+
 === Connexion responsable ===
 [OK] Connexion responsable -> HTTP 200
 {"utilisateur":{"id":4,"email":"responsable@univ.test","role":"RESPONSABLE","etudiant_id":null,"nom":null,"prenom":null}}
+
+
+[OK] GET /api/entreprises en tant que responsable -> HTTP 403
+{"erreur":"Accès interdit."}
+
 
 === Cas 5 : 404 demande inexistante ===
 [OK] PATCH /api/demandes/999/statut -> HTTP 404
 {"erreur":"Demande introuvable."}
 
+
 === Validation de la demande créée (succès 200) ===
 [OK] PATCH /api/demandes/5/statut -> HTTP 200
-{"id":5,"statut":"VALIDEE","motif_refus":null,"date_decision":"2026-11-18 15:28:04"}
+{"id":5,"statut":"VALIDEE","motif_refus":null,"date_decision":"2026-11-19 16:59:17"}
+
 
 === Cas 6 : 409 validation répétée ===
 [OK] PATCH /api/demandes/5/statut (répétition) -> HTTP 409
 {"erreur":"Transition de statut interdite."}
 
-Tous les cas HTTP du TP6 sont conformes.
+
+Tous les cas HTTP des TP6 et TP7 sont conformes.
 ```
 
 ## 3. Contrôles complémentaires

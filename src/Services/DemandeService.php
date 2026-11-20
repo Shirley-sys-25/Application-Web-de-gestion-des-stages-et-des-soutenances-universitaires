@@ -72,6 +72,16 @@ final class DemandeService
     }
 
     /**
+     * @return array<string, mixed>|null
+     */
+    public function trouver(int $id): ?array
+    {
+        $ligne = $this->depot->findById($id);
+
+        return $ligne === null ? null : $this->formater($ligne);
+    }
+
+    /**
      * @param array<string, mixed> $donnees
      * @return array<string, mixed>
      */

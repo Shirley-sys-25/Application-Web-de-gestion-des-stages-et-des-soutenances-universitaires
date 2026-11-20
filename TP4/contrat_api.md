@@ -26,21 +26,39 @@ Aucun détail technique (SQL, nom d'utilisateur, mot de passe, trace PHP) n'est 
 |---|---|
 | `400` | Données invalides ou incomplètes |
 | `401` | Non authentifié (pas de session) |
-| `403` | Authentifié mais rôle interdit |
+| `403` | Authentifié mais rôle interdit, ou jeton CSRF absent/invalide |
 | `404` | Ressource introuvable |
 | `409` | Conflit d'état (transition interdite) |
 | `500` | Erreur interne du serveur |
 | `503` | Base de données indisponible |
+
+## Protection CSRF
+
+Depuis le TP8, les écritures (`POST`, `PATCH`, `PUT`, `DELETE`) exigent un jeton synchronisé :
+
+1. `GET /api/csrf` renvoie `{"csrf_token":"…"}` pour la session courante.
+2. Le client renvoie ce jeton dans l'en-tête `X-CSRF-Token`.
+3. Le serveur compare le jeton reçu à celui de la session avec `hash_equals()` et répond `403`
+   si le jeton est absent ou invalide.
+
+Le jeton est stocké en session et n'est pas lisible par un site tiers (Same-Origin Policy). Toutes
+les écritures sont protégées, y compris `POST /api/connexion` : le formulaire de connexion récupère
+d'abord le jeton. Les écritures sans session autres que la connexion laissent l'authentification
+répondre `401`.
 
 ## Tableau des routes
 
 | Méthode | Chemin | Rôle autorisé | Succès | Erreurs |
 |---|---|---|---|---|
 | `GET` | `/api/sante` | public | `200` | `503` |
+| `GET` | `/api/csrf` | public | `200` | — |
 | `GET` | `/api/demandes` | Responsable, Administrateur | `200` | `400`, `401`, `403` |
+| `GET` | `/api/demandes/mes-demandes` | Étudiant | `200` | `401`, `403` |
+| `GET` | `/api/demandes/{id}` | Étudiant propriétaire, Responsable, Administrateur | `200` | `401`, `403`, `404` |
 | `GET` | `/api/entreprises` | Étudiant | `200` | `401`, `403` |
 | `POST` | `/api/demandes` | Étudiant | `201` | `400`, `401`, `403` |
 | `PATCH` | `/api/demandes/{id}/statut` | Responsable, Administrateur | `200` | `400`, `401`, `403`, `404`, `409` |
+| `POST` | `/api/soutenances` | Responsable, Administrateur | `201` | `400`, `401`, `403`, `404`, `409` |
 
 ---
 
@@ -248,3 +266,67 @@ lecture seule, réservée aux étudiants connectés.
 
 Cette route a été ajoutée au TP7 pour alimenter le sélecteur d'entreprise du frontend. Elle ne
 permet aucune création ni modification : le dépôt reste assuré par `POST /api/demandes`.
+
+## Mise à jour TP8
+
+### GET /api/csrf
+
+Renvoie le jeton CSRF de la session courante. Route publique : elle crée une session si nécessaire.
+
+```json
+{
+  "csrf_token": "e094b2fe47270a4a63dc62f0cad74bcf843738de02440305c12fa01a067e4bb7"
+}
+```
+
+Le jeton doit être envoyé dans `X-CSRF-Token` pour toute écriture.
+
+### GET /api/demandes/{id}
+
+Lit un dossier précis. Un étudiant ne peut lire que le dossier lié à son compte ; un autre dossier
+existant renvoie `403` sans aucune donnée. Le responsable et l'administrateur peuvent lire tous les
+dossiers. Une demande inexistante renvoie `404`.
+
+**Succès — `200`** : même objet que dans la liste `GET /api/demandes`.
+
+**Erreurs** : `401` sans session, `403` pour le dossier d'un autre étudiant, `404` si la demande
+n'existe pas.
+
+### POST /api/soutenances
+
+Programme la soutenance d'une demande validée (EF-05). Réservé au responsable et à l'administrateur.
+Exige le jeton CSRF.
+
+**Corps attendu**
+
+```json
+{
+  "demande_id": 5,
+  "date_heure": "2027-04-10 09:30:00",
+  "salle": "B12",
+  "duree_minutes": 45
+}
+```
+
+Règles :
+
+- `demande_id` est un entier positif et la demande doit être au statut `VALIDEE`.
+- `date_heure` respecte strictement le format `AAAA-MM-JJ HH:MM:SS` et doit être une date réelle :
+  `2026-02-30 10:00:00` renvoie `400`.
+- `salle` est obligatoire (20 caractères maximum) ; `duree_minutes` est comprise entre 15 et 240.
+- Une demande n'a qu'une soutenance et un couple `(date_heure, salle)` est unique.
+
+**Succès — `201`**
+
+```json
+{
+  "id": 2,
+  "demande_id": 5,
+  "date_heure": "2027-04-10 09:30:00",
+  "salle": "B12",
+  "duree_minutes": 45
+}
+```
+
+**Erreurs** : `400` données invalides (dont date inexistante), `401` sans session, `403` rôle
+interdit, `404` demande inexistante, `409` demande non validée, déjà programmée ou créneau occupé.

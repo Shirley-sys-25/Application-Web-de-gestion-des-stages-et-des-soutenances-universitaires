@@ -17,17 +17,25 @@ trap 'rm -rf "$DOSSIER"' EXIT
 
 COOKIE_ETUDIANT="$DOSSIER/etudiant.cookies"
 COOKIE_RESPONSABLE="$DOSSIER/responsable.cookies"
+CSRF_ETUDIANT=""
+CSRF_RESPONSABLE=""
 
 # Renvoie le corps puis le code HTTP sur la dernière ligne.
+# Le 5e argument optionnel est le jeton CSRF à envoyer.
 requete() {
     local methode="$1"
     local chemin="$2"
     local donnees="${3:-}"
     local cookie="${4:-}"
+    local csrf="${5:-}"
     local arguments=(-sS -X "$methode" -H 'Content-Type: application/json' -w $'\n%{http_code}')
 
     if [ -n "$cookie" ]; then
         arguments+=(-b "$cookie" -c "$cookie")
+    fi
+
+    if [ -n "$csrf" ]; then
+        arguments+=(-H "X-CSRF-Token: $csrf")
     fi
 
     if [ -n "$donnees" ]; then
@@ -35,6 +43,13 @@ requete() {
     fi
 
     curl "${arguments[@]}" "$BASE_URL$chemin"
+}
+
+# Ouvre une session et récupère le jeton CSRF associé.
+recuperer_jeton() {
+    local cookie="$1"
+    curl -sS -b "$cookie" -c "$cookie" "$BASE_URL/api/csrf" \
+        | php -r '$d=json_decode(stream_get_contents(STDIN), true); echo $d["csrf_token"] ?? "";'
 }
 
 verifier() {
@@ -56,7 +71,8 @@ verifier() {
 }
 
 echo "=== Connexion étudiant ==="
-reponse="$(requete POST /api/connexion '{"email":"etudiant1@univ.test","mot_de_passe":"etudiant123"}' "$COOKIE_ETUDIANT")"
+CSRF_ETUDIANT="$(recuperer_jeton "$COOKIE_ETUDIANT")"
+reponse="$(requete POST /api/connexion '{"email":"etudiant1@univ.test","mot_de_passe":"etudiant123"}' "$COOKIE_ETUDIANT" "$CSRF_ETUDIANT")"
 verifier 'Connexion étudiant' 200 "$reponse"
 
 echo "=== TP7 : GET /api/entreprises ==="
@@ -74,12 +90,12 @@ reponse="$(requete GET /api/entreprises)"
 verifier 'GET /api/entreprises sans session' 401 "$reponse"
 
 echo "=== Cas 1 : succès de création ==="
-reponse="$(requete POST /api/demandes '{"entreprise_id":1}' "$COOKIE_ETUDIANT")"
+reponse="$(requete POST /api/demandes '{"entreprise_id":1}' "$COOKIE_ETUDIANT" "$CSRF_ETUDIANT")"
 verifier 'POST /api/demandes (entreprise 1)' 201 "$reponse"
 DEMANDE_ID="$(printf '%s' "$reponse" | head -n 1 | php -r '$d=json_decode(stream_get_contents(STDIN), true); echo $d["id"] ?? "";')"
 
 echo "=== Cas 2 : 400 entreprise inexistante ==="
-reponse="$(requete POST /api/demandes '{"entreprise_id":999}' "$COOKIE_ETUDIANT")"
+reponse="$(requete POST /api/demandes '{"entreprise_id":999}' "$COOKIE_ETUDIANT" "$CSRF_ETUDIANT")"
 verifier 'POST /api/demandes (entreprise 999)' 400 "$reponse"
 
 echo "=== Cas 3 : 401 sans session ==="
@@ -91,22 +107,23 @@ reponse="$(requete GET /api/demandes '' "$COOKIE_ETUDIANT")"
 verifier 'GET /api/demandes en tant qu’étudiant' 403 "$reponse"
 
 echo "=== Connexion responsable ==="
-reponse="$(requete POST /api/connexion '{"email":"responsable@univ.test","mot_de_passe":"responsable123"}' "$COOKIE_RESPONSABLE")"
+CSRF_RESPONSABLE="$(recuperer_jeton "$COOKIE_RESPONSABLE")"
+reponse="$(requete POST /api/connexion '{"email":"responsable@univ.test","mot_de_passe":"responsable123"}' "$COOKIE_RESPONSABLE" "$CSRF_RESPONSABLE")"
 verifier 'Connexion responsable' 200 "$reponse"
 
 reponse="$(requete GET /api/entreprises '' "$COOKIE_RESPONSABLE")"
 verifier 'GET /api/entreprises en tant que responsable' 403 "$reponse"
 
 echo "=== Cas 5 : 404 demande inexistante ==="
-reponse="$(requete PATCH /api/demandes/999/statut '{"decision":"VALIDEE"}' "$COOKIE_RESPONSABLE")"
+reponse="$(requete PATCH /api/demandes/999/statut '{"decision":"VALIDEE"}' "$COOKIE_RESPONSABLE" "$CSRF_RESPONSABLE")"
 verifier 'PATCH /api/demandes/999/statut' 404 "$reponse"
 
 echo "=== Validation de la demande créée (succès 200) ==="
-reponse="$(requete PATCH "/api/demandes/$DEMANDE_ID/statut" '{"decision":"VALIDEE"}' "$COOKIE_RESPONSABLE")"
+reponse="$(requete PATCH "/api/demandes/$DEMANDE_ID/statut" '{"decision":"VALIDEE"}' "$COOKIE_RESPONSABLE" "$CSRF_RESPONSABLE")"
 verifier "PATCH /api/demandes/$DEMANDE_ID/statut" 200 "$reponse"
 
 echo "=== Cas 6 : 409 validation répétée ==="
-reponse="$(requete PATCH "/api/demandes/$DEMANDE_ID/statut" '{"decision":"VALIDEE"}' "$COOKIE_RESPONSABLE")"
+reponse="$(requete PATCH "/api/demandes/$DEMANDE_ID/statut" '{"decision":"VALIDEE"}' "$COOKIE_RESPONSABLE" "$CSRF_RESPONSABLE")"
 verifier "PATCH /api/demandes/$DEMANDE_ID/statut (répétition)" 409 "$reponse"
 
 echo 'Tous les cas HTTP des TP6 et TP7 sont conformes.'

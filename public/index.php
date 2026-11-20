@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Container;
 use App\Exceptions\HttpException;
+use App\Security\Csrf;
 
 /**
  * Point d'entrée unique de l'API.
@@ -29,6 +30,9 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+// Chaque session dispose d'un jeton CSRF, même avant connexion.
+Csrf::initialiser();
+
 $conteneur = new Container($config);
 
 $methode = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -51,6 +55,9 @@ if ($methode === 'GET' && $chemin === '/') {
 }
 
 try {
+    // Contrôle CSRF avant toute écriture (connexion comprise).
+    Csrf::verifierEcriture($methode, $chemin);
+
     $reponse = match (true) {
         $methode === 'GET' && $chemin === '/' => [
             'status' => 200,
@@ -58,8 +65,10 @@ try {
                 'application' => 'Gestion des stages et des soutenances',
                 'sante' => '/api/sante',
                 'connexion' => '/api/connexion',
+                'csrf' => '/api/csrf',
                 'demandes' => '/api/demandes',
-                'contrat' => 'TP6/README.md',
+                'soutenances' => '/api/soutenances',
+                'contrat' => 'TP4/contrat_api.md',
             ],
         ],
 
@@ -75,17 +84,27 @@ try {
         $methode === 'GET' && $chemin === '/api/moi'
             => $conteneur->authController()->moi(),
 
+        $methode === 'GET' && $chemin === '/api/csrf'
+            => $conteneur->authController()->csrf(),
+
         $methode === 'GET' && $chemin === '/api/demandes'
             => $conteneur->demandeController()->lister(),
 
         $methode === 'GET' && $chemin === '/api/demandes/mes-demandes'
             => $conteneur->demandeController()->mesDemandes(),
 
+        $methode === 'GET'
+            && preg_match('#^/api/demandes/([1-9][0-9]*)$#', $chemin, $correspondances) === 1
+            => $conteneur->demandeController()->detail((int) $correspondances[1]),
+
         $methode === 'GET' && $chemin === '/api/entreprises'
             => $conteneur->entrepriseController()->lister(),
 
         $methode === 'POST' && $chemin === '/api/demandes'
             => $conteneur->demandeController()->creer(),
+
+        $methode === 'POST' && $chemin === '/api/soutenances'
+            => $conteneur->soutenanceController()->creer(),
 
         $methode === 'PATCH'
             && preg_match('#^/api/demandes/([1-9][0-9]*)/statut$#', $chemin, $correspondances) === 1
