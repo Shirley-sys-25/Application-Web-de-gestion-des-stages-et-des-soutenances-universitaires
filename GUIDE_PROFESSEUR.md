@@ -10,6 +10,16 @@ Le dépôt est public :
 > Les données sont fictives. Les comptes de démonstration et les mots de passe sont
 > uniquement destinés à un serveur local.
 
+## Démarrage en 5 étapes
+
+1. Télécharger l'archive ZIP (voir section 1) et la décompresser.
+2. Installer PHP 8.1+ avec `pdo_mysql`, et MySQL/MariaDB (XAMPP ou WAMP sous Windows).
+3. Copier `.env.example` vers `.env` et renseigner les accès à la base.
+4. Créer la base `stages`, puis importer les quatre scripts SQL (section 5).
+5. Lancer `php -S 127.0.0.1:8000 -t public` et ouvrir <http://127.0.0.1:8000/>.
+
+Le scénario de test est décrit à la section 8.
+
 ## 1. Récupérer le projet
 
 ### Avec Git
@@ -24,7 +34,17 @@ cd Application-Web-de-gestion-des-stages-et-des-soutenances-universitaires
 1. Ouvrir la page GitHub du dépôt.
 2. Cliquer sur **Code** puis **Download ZIP**.
 3. Décompresser l'archive.
-4. Ouvrir un terminal dans le dossier obtenu.
+4. Ouvrir le dossier obtenu.
+
+Lien direct vers l'archive de la version `v1.1-tp8` (avec `LISEZ-MOI.txt` et les lanceurs) :
+
+<https://github.com/Shirley-sys-25/Application-Web-de-gestion-des-stages-et-des-soutenances-universitaires/archive/refs/tags/v1.1-tp8.zip>
+
+Le dossier contient un fichier `LISEZ-MOI.txt` pour un démarrage rapide sous
+Windows et un lanceur `demarrer.bat` (ou `demarrer.sh` sous Linux/macOS).
+
+> L'archive contient le code, les TP, les preuves et le présent guide. Elle ne
+> contient ni le dossier `.git`, ni le fichier `.env`, ni le jar PlantUML.
 
 ## 2. Prérequis
 
@@ -159,6 +179,19 @@ mysql -u stages -p stages < TP6/002_seed_tp6.sql
 > `utilisateur` et `historique_demande`, qui dépendent de la table `etudiant`.
 
 ## 6. Lancer l'application
+
+### Windows : double-clic
+
+Double-cliquer sur `demarrer.bat`. Le script cherche PHP dans le `PATH`, puis
+dans `C:\xampp\php\php.exe`, et démarre le serveur.
+
+### Linux / macOS : lanceur
+
+```bash
+./demarrer.sh
+```
+
+### Ligne de commande
 
 Depuis la racine du projet :
 

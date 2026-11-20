@@ -14,6 +14,8 @@ fonctionnel et testé ; l'affectation d'un encadreur et l'écran de soutenance r
 > **Pour tester sur un autre poste :** suivre le guide
 > [`GUIDE_PROFESSEUR.md`](GUIDE_PROFESSEUR.md) (installation Windows/Linux, création de la
 > base, comptes fictifs, scénario de démonstration et dépannage).
+>
+> Sans Git : [télécharger directement le ZIP de la version v1.1](https://github.com/Shirley-sys-25/Application-Web-de-gestion-des-stages-et-des-soutenances-universitaires/archive/refs/tags/v1.1-tp8.zip).
 
 ## Organisation du dépôt
 
@@ -27,6 +29,7 @@ fonctionnel et testé ; l'affectation d'un encadreur et l'écran de soutenance r
 | `TP7/` | Maquettes des 7 écrans et aperçu |
 | `TP8/` | Matrice de tests, preuves de sécurité et fiche de revue de code |
 | `GUIDE_PROFESSEUR.md` | Installation sur un autre poste et scénario de test |
+| `LISEZ-MOI.txt`, `demarrer.bat`, `demarrer.sh` | Démarrage rapide pour un poste Windows/Linux |
 | `public/` | Point d'entrée HTTP (`index.php`, `index.html`) et frontend (HTML/CSS/JS) |
 | `src/` | Contrôleurs, services, dépôts, exceptions HTTP et connexion PDO |
 | `config/` | Chargement de la configuration depuis `.env` |
@@ -86,6 +89,9 @@ php tests/test_transitions.php
 # Serveur
 php -S 127.0.0.1:8000 -t public
 ```
+
+Sous Windows, il est aussi possible de double-cliquer sur `demarrer.bat` après
+avoir configuré la base. Sous Linux/macOS : `./demarrer.sh`.
 
 Dans un second terminal, avec le serveur lancé :
 

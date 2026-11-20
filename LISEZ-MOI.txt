@@ -1,0 +1,102 @@
+PROJET INFORMATIQUE 2 - GESTION DES STAGES ET DES SOUTENANCES
+Version TP1 a TP8
+================================================================
+
+Ce dossier contient l'application PHP et les livrables.
+Aucun compte GitHub n'est necessaire : le projet peut etre lance directement
+depuis ce dossier decompresse.
+
+INSTALLATION RAPIDE SOUS WINDOWS (XAMPP)
+----------------------------------------------------------------
+
+1. Installer XAMPP (PHP 8.1 ou plus) :
+   https://www.apachefriends.org/
+
+2. Demarrer Apache et MySQL dans le panneau XAMPP.
+
+3. Ouvrir http://localhost/phpmyadmin
+   - Creer une base nommee : stages
+   - Encodage : utf8mb4_unicode_ci
+   - Onglet Importer, puis importer dans cet ordre :
+       TP3/001_schema.sql
+       TP3/002_seed.sql
+       TP6/001_schema_tp6.sql
+       TP6/002_seed_tp6.sql
+
+4. Configuration de la base :
+   - Sans fichier .env, l'application utilise les valeurs par defaut :
+     DB_USER=root et DB_PASS vide. Cela convient a une installation XAMPP
+     locale ou MySQL n'a pas de mot de passe.
+   - Sinon, copier .env.example en .env, puis adapter DB_USER, DB_PASS,
+     DB_HOST et DB_PORT.
+
+5. Double-cliquer sur : demarrer.bat
+   Une fenetre noire s'ouvre et le serveur demarre.
+
+6. Ouvrir dans le navigateur :
+   http://127.0.0.1:8000/
+
+7. Pour arreter le serveur : fermer la fenetre noire ou faire Ctrl+C.
+
+
+COMPTES DE DEMONSTRATION
+----------------------------------------------------------------
+
+Etudiant A : etudiant1@univ.test / etudiant123
+Etudiant B : etudiant2@univ.test / etudiant123
+Responsable : responsable@univ.test / responsable123
+Administrateur : admin@univ.test / admin123
+
+Ces comptes sont fictifs et reserves a un test local.
+
+
+SCENARIO DE TEST RAPIDE
+----------------------------------------------------------------
+
+1. Se connecter avec etudiant1@univ.test.
+   Ouvrir la demande #4 : elle est refusee, le motif est affiche.
+
+2. Se deconnecter, puis se connecter avec etudiant2@univ.test.
+   Ouvrir cette adresse dans le navigateur :
+   http://127.0.0.1:8000/#/etudiant/demandes/4
+   Resultat attendu : "Acces interdit a ce dossier."
+
+   Ce n'est pas un bug : c'est le test de securite T-05 du TP8.
+   L'etudiant B n'a pas le droit de lire le dossier de l'etudiant A.
+
+3. Se deconnecter, puis se connecter avec responsable@univ.test.
+   Ouvrir la demande #2, choisir Valider, puis confirmer.
+
+4. Se reconnecter avec etudiant2@univ.test :
+   la demande #2 est maintenant validee.
+
+
+EN CAS DE PROBLEME
+----------------------------------------------------------------
+
+- "Connexion a la base de donnees impossible" :
+  verifier que MySQL est demarre dans XAMPP et que la base stages existe.
+
+- "403 Jeton CSRF invalide ou absent" :
+  normal pour un appel API direct sans jeton ; utiliser l'interface web.
+
+- Page blanche ou erreur 500 :
+  verifier que les quatre scripts SQL ont bien ete importes.
+
+- Le port 8000 est deja utilise :
+  ouvrir GUIDE_PROFESSEUR.md, section 12 (Depannage).
+
+
+GUIDE COMPLET
+----------------------------------------------------------------
+
+Le fichier GUIDE_PROFESSEUR.md contient :
+- l'installation detaillee sous Windows, Linux et macOS ;
+- la creation de la base et de l'utilisateur SQL ;
+- les tests automatises ;
+- les preuves consultables ;
+- le perimetre reellement implemente ;
+- le depannage.
+
+Le projet s'arrete au TP8. Le TP9 (second poste, sauvegarde et restauration)
+et le TP10 (dossier de livraison et soutenance) ne sont pas encore produits.
