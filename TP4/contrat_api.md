@@ -3,7 +3,7 @@
 **Version :** 1 (TP4)  
 **Base URL locale :** `http://localhost:8000`  
 **Format :** JSON UTF-8 (`Content-Type: application/json; charset=utf-8`)  
-**Authentification :** session par cookie (implémentée au TP6)  
+**Authentification :** session par cookie (TP6) et jeton CSRF sur les écritures (TP8)<br>
 **Rôles :** `ETUDIANT`, `RESPONSABLE`, `ADMINISTRATEUR`, `DEVELOPPEUR`
 
 Le rôle `DEVELOPPEUR` est réservé à la maintenance (journalisation, déploiement, diagnostic ; EF-12). Il n'accède à aucune route métier du TP4 ; son périmètre sera précisé avec l'authentification au TP6.

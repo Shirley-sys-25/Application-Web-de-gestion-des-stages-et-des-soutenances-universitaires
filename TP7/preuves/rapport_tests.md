@@ -5,15 +5,17 @@
 | Vérification | Résultat |
 |---|---|
 | Syntaxe JavaScript (`node --check`) | OK |
-| Syntaxe PHP (`php -l`, 15 fichiers) | OK |
-| Syntaxe du script de test (`bash -n`) | OK |
+| Syntaxe PHP (`php -l`, 19 fichiers) | OK |
+| Syntaxe des scripts de test (`bash -n`, TP6 et TP8) | OK |
 | Tests HTTP TP6 + TP7 (`tests/test_api_tp6.sh`) | 12/12 cas OK |
 | Parcours navigateur de bout en bout | OK, aucune erreur JavaScript |
 | Validation W3C Nu (14 pages rendues) | 14/14, 0 erreur, 0 avertissement |
 | Validation `html-validate` (14 pages) | 14/14, 0 erreur |
 | Test XSS dans un motif de refus | OK, charge utile affichée en texte |
 
-Date d'exécution : **19 novembre 2026**.
+Date d'exécution initiale : **19 novembre 2026**. Les contrôles statiques et la sortie API ont
+été rejoués le **20 novembre 2026** après l'ajout du CSRF du TP8 ; les captures et snapshots HTML
+restent ceux du parcours initial.
 
 ## Environnement
 
@@ -35,6 +37,7 @@ Commandes exécutées :
 node --check public/app.js
 find src public -name '*.php' -print0 | sort -z | xargs -0 -n1 php -l
 bash -n tests/test_api_tp6.sh
+bash -n tests/test_api_tp8.sh
 ```
 
 Résultat complet : [`verifications_statiques.txt`](verifications_statiques.txt).
@@ -48,9 +51,12 @@ OK
 No syntax errors detected in public/index.php
 No syntax errors detected in src/Container.php
 ...
-No syntax errors detected in src/Services/EntrepriseService.php
+No syntax errors detected in src/Services/SoutenanceService.php
 
 bash -n tests/test_api_tp6.sh
+OK
+
+bash -n tests/test_api_tp8.sh
 OK
 ```
 
@@ -77,13 +83,14 @@ Cas couverts :
 [OK] Connexion responsable -> HTTP 200
 [OK] GET /api/entreprises en tant que responsable -> HTTP 403
 [OK] PATCH /api/demandes/999/statut -> HTTP 404
-[OK] PATCH /api/demandes/8/statut -> HTTP 200
-[OK] PATCH /api/demandes/8/statut (répétition) -> HTTP 409
+[OK] PATCH /api/demandes/{id}/statut -> HTTP 200
+[OK] PATCH /api/demandes/{id}/statut (répétition) -> HTTP 409
 Tous les cas HTTP des TP6 et TP7 sont conformes.
 ```
 
 Cela couvre les codes `200`, `201`, `400`, `401`, `403`, `404` et `409`, ainsi
-que les contrôles de rôle et de transition de statut.
+que les contrôles de rôle et de transition de statut. Depuis le TP8, le script
+récupère aussi le jeton CSRF avant la connexion et l'envoie sur chaque écriture.
 
 ## 3. Parcours navigateur de bout en bout
 

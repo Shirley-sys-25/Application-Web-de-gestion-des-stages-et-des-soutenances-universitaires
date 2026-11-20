@@ -1,5 +1,15 @@
 # TP4 — Vérification locale
 
+## 0. Arborescence du dépôt
+
+Capture de l'explorateur VS Code, prise sur la branche `main` le 20 novembre 2026 :
+
+![Arborescence du dépôt dans VS Code](captures/arborescence_projet.png)
+
+Les dossiers `TP1` à `TP8` contiennent les livrables documentaires, `public/` sert le frontend et
+le point d'entrée HTTP, `src/` contient le backend PHP, `config/` lit les secrets dans `.env` et
+`tests/` regroupe les scripts de vérification. `TP9` et `TP10` restent à produire.
+
 ## Prérequis
 
 - PHP 8.1 ou plus ;
@@ -47,6 +57,13 @@ Le fichier `.env` est ignoré par Git. Ne jamais le commiter.
 mariadb -u root -e "CREATE DATABASE stages CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
 mariadb -u root stages < TP3/001_schema.sql
 mariadb -u root stages < TP3/002_seed.sql
+```
+
+Pour l'application actuelle (TP6 à TP8), charger aussi les comptes et l'historique :
+
+```bash
+mariadb -u root stages < TP6/001_schema_tp6.sql
+mariadb -u root stages < TP6/002_seed_tp6.sql
 ```
 
 ## 3. Tester la connexion PDO
@@ -97,22 +114,29 @@ chmod +x tests/test_sante.sh
 
 ```bash
 curl -i http://127.0.0.1:8000/
+curl -i http://127.0.0.1:8000/api/csrf
 curl -i http://127.0.0.1:8000/api/demandes
 curl -i -X POST http://127.0.0.1:8000/api/demandes
 curl -i -X PATCH http://127.0.0.1:8000/api/demandes/2/statut
 curl -i http://127.0.0.1:8000/api/inconnue
 ```
 
-Résultats attendus au TP4 :
+Résultats attendus avec l'application actuelle (TP8) :
 
 | Requête | Code | Corps |
 |---|---|---|
-| `GET /` | `200` | description de l'API |
+| `GET /` | `200` | interface HTML du TP7 |
 | `GET /api/sante` | `200` | `{"statut":"ok","base":"ok"}` |
-| `GET /api/demandes` | `501` | route prévue au TP6 |
-| `POST /api/demandes` | `501` | route prévue au TP6 |
-| `PATCH /api/demandes/2/statut` | `501` | route prévue au TP6 |
+| `GET /api/csrf` | `200` | `{"csrf_token":"…"}` |
+| `GET /api/demandes` | `401` sans session | `{"erreur":"Authentification requise."}` |
+| `POST /api/demandes` | `401` sans session | `{"erreur":"Authentification requise."}` |
+| `PATCH /api/demandes/2/statut` | `401` sans session | `{"erreur":"Authentification requise."}` |
 | `GET /api/inconnue` | `404` | `{"erreur":"Route introuvable."}` |
+
+Pour une écriture avec session, récupérer d'abord le jeton avec `GET /api/csrf`, puis l'envoyer
+dans `X-CSRF-Token` ; sans jeton valide, la réponse est `403`. La connexion elle-même exige ce
+jeton depuis le TP8. Les scripts `tests/test_api_tp6.sh` et `tests/test_api_tp8.sh` automatisent
+ce parcours avec des cookies temporaires.
 
 ## 7. Tester le cas base indisponible
 

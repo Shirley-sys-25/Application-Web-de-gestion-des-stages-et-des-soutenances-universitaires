@@ -1,3 +1,6 @@
+# TP7 — sortie API rejouée le 20/11/2026 après l'ajout du CSRF (TP8)
+# Commande : BASE_URL=http://127.0.0.1:8010 ./tests/test_api_tp6.sh
+
 === Connexion étudiant ===
 [OK] Connexion étudiant -> HTTP 200
 {"utilisateur":{"id":1,"email":"etudiant1@univ.test","role":"ETUDIANT","etudiant_id":1,"nom":"ADJOVI","prenom":"Koffi"}}
@@ -14,7 +17,7 @@
 
 === Cas 1 : succès de création ===
 [OK] POST /api/demandes (entreprise 1) -> HTTP 201
-{"id":8,"statut":"SOUMISE","date_depot":"2026-11-19 12:32:05"}
+{"id":5,"statut":"SOUMISE","date_depot":"2026-11-20 08:05:47"}
 
 
 === Cas 2 : 400 entreprise inexistante ===
@@ -47,12 +50,12 @@
 
 
 === Validation de la demande créée (succès 200) ===
-[OK] PATCH /api/demandes/8/statut -> HTTP 200
-{"id":8,"statut":"VALIDEE","motif_refus":null,"date_decision":"2026-11-19 12:32:06"}
+[OK] PATCH /api/demandes/5/statut -> HTTP 200
+{"id":5,"statut":"VALIDEE","motif_refus":null,"date_decision":"2026-11-20 08:05:48"}
 
 
 === Cas 6 : 409 validation répétée ===
-[OK] PATCH /api/demandes/8/statut (répétition) -> HTTP 409
+[OK] PATCH /api/demandes/5/statut (répétition) -> HTTP 409
 {"erreur":"Transition de statut interdite."}
 
 

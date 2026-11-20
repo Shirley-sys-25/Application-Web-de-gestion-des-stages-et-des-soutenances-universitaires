@@ -81,7 +81,7 @@ En tant que responsable, je veux valider ou refuser une demande complète afin q
 | EF-04 | DemandeService::affecterEncadreur | T-08 affectation sur une demande VALIDEE → 200. T-09 affectation sur une demande non validée → 409. | à faire |
 | EF-05 | SoutenanceService::programmer | T-10 date valide → 201. T-11 date 2026-02-30 → 400. T-12 seconde soutenance pour la même demande → refusée (409). | fait (TP8 T-04, T-15, T-16 ; API sans écran) |
 | EF-06 | DemandeController::mesDemandes | T-13 l'étudiant connecté ne voit que ses propres demandes. | fait (TP7 ; TP8 T-18) |
-| EF-07 | DemandeRepository::rechercher | T-14 recherche par statut VALIDEE → uniquement des demandes VALIDEE. | à faire si temps |
+| EF-07 | DemandeRepository::rechercher | T-14 recherche par statut VALIDEE → uniquement des demandes VALIDEE. | fait côté API (`GET /api/demandes?statut=…` et `?q=…`) ; filtre `q` testé au TP8 T-07, filtre `statut` vérifié manuellement le 20/11/2026 |
 | EF-08 | DemandeService::historique | T-15 l'historique d'une demande validée contient la décision. | reporté |
 | EF-10 | UtilisateurService (création, désactivation, rôle) | T-22 compte désactivé → connexion refusée ; rôle modifié → droits mis à jour. | à faire |
 | EF-11 | AuthService / UtilisateurService (profil) | T-23 l'étudiant modifie son propre profil → 200 ; T-24 il tente de modifier le profil d'un autre → 403. | à faire si temps |
