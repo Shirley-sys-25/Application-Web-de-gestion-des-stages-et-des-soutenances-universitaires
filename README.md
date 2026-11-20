@@ -17,7 +17,7 @@ validation ou refus motivé, affectation d'un encadreur, programmation des soute
 | `TP1/` | Fiche de cadrage |
 | `TP2/` | Exigences fonctionnelles et non fonctionnelles, matrice de traçabilité |
 | `TP3/` | Diagrammes UML (`.puml` + `.png`), rapport `.docx`, scripts SQL, jeu d'essai et sorties de vérification |
-| `TP4/` | Contrat d'API initial, ADR-001 et procédure de vérification locale |
+| `TP4/` | Contrat d'API initial, ADR-001, procédure de vérification locale et capture d'arborescence |
 | `TP6/` | Scripts SQL (`utilisateur`, `historique_demande`), collection Postman et preuves de tests |
 | `TP7/` | Maquettes des 7 écrans et aperçu |
 | `TP8/` | Matrice de tests, preuves de sécurité et fiche de revue de code |
@@ -161,4 +161,5 @@ Les sorties de référence TP3 sont dans `TP3/sorties/` (MariaDB 11.8.6, base vi
 | TP6 | API des demandes (auth, transitions, transaction, tests HTTP) | Fait |
 | TP7 | Maquettes alignées et frontend accessible (étudiant / responsable) | Fait |
 | TP8 | Matrice de tests, cas limites, autorisation, injection, CSRF et revue de code | Fait |
-| TP9 à TP10 | — | À venir |
+| TP9 | Déploiement sur un second poste, sauvegarde et restauration | À venir |
+| TP10 | Dossier de livraison et soutenance | À venir |
